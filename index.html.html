@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="grassin日報">
+<title>grassin 日報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF6EE;
+    --cream-deep: #F1EADB;
+    --ink: #34302A;
+    --ink-soft: #6B6459;
+    --clay: #AD6748;
+    --clay-soft: #E7CFC1;
+    --sage: #8C9574;
+    --sage-soft: #DDE2CE;
+    --sky: #B9C7CE;
+    --line: #E4DBCB;
+    --white: #FFFFFF;
+    --radius: 18px;
+    --shadow: 0 2px 14px rgba(90, 70, 50, 0.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 400px at 50% -80px, rgba(185,199,206,0.35), transparent 60%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    padding-bottom:64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 18px;}
+
+  /* ---------- Header ---------- */
+  .hero{
+    padding:38px 0 26px;
+    text-align:center;
+    position:relative;
+  }
+  .hero .cloud{
+    position:absolute;
+    top:6px; left:50%; transform:translateX(-50%);
+    font-size:11px;
+    letter-spacing:.4em;
+    color:var(--ink-soft);
+    opacity:.55;
+  }
+  .hero .fox{
+    font-size:34px;
+    display:block;
+    margin-bottom:6px;
+    filter:drop-shadow(0 2px 3px rgba(0,0,0,0.08));
+  }
+  .hero h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 10px;
+    color:var(--ink);
+  }
+  .hero .tagline{
+    font-family:'Shippori Mincho', serif;
+    font-size:15px;
+    color:var(--clay);
+    letter-spacing:.06em;
+    margin:0 0 4px;
+  }
+  .hero .sub{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:0;
+    line-height:1.8;
+  }
+  .divider{
+    display:flex; align-items:center; gap:10px;
+    margin:22px 0;
+    color:var(--ink-soft);
+  }
+  .divider::before,.divider::after{
+    content:"";flex:1;height:1px;background:var(--line);
+  }
+  .divider span{font-size:11px; letter-spacing:.3em;}
+
+  /* ---------- Date bar ---------- */
+  .datebar{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--white);
+    border-radius:14px;
+    padding:12px 16px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+  .datebar .navbtn{
+    background:none;border:none;font-size:18px;color:var(--clay);
+    padding:6px 10px; cursor:pointer; border-radius:8px;
+  }
+  .datebar .navbtn:active{background:var(--cream-deep);}
+  .datebar .datelabel{
+    font-family:'Shippori Mincho', serif;
+    font-size:15.5px;
+    text-align:center;
+    flex:1;
+  }
+  .datebar .datelabel small{
+    display:block; font-size:11px; color:var(--ink-soft); font-family:'Zen Kaku Gothic New',sans-serif; margin-top:2px;
+  }
+  .today-pill{
+    display:inline-block; font-size:10px; background:var(--sage-soft); color:#57603F;
+    padding:2px 8px; border-radius:20px; margin-top:3px;
+  }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:20px 20px 22px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(180,150,120,0.08);
+  }
+  .card h2{
+    font-family:'Shippori Mincho', serif;
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 14px;
+    display:flex; align-items:center; gap:7px;
+    color:var(--ink);
+  }
+  .card h2 .mark{color:var(--clay); font-size:14px;}
+
+  /* counters */
+  .counter-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .counter-row:last-child{border-bottom:none;}
+  .counter-name{font-size:13.5px; color:var(--ink); font-weight:500; width:64px; flex-shrink:0;}
+  .counter-bar-wrap{flex:1; margin:0 12px;}
+  .counter-bar-bg{height:6px; background:var(--cream-deep); border-radius:6px; overflow:hidden;}
+  .counter-bar-fill{height:100%; background:linear-gradient(90deg, var(--sage), var(--clay)); border-radius:6px; transition:width .4s ease;}
+  .counter-nums{font-size:12.5px; color:var(--ink-soft); margin-top:5px; letter-spacing:.02em;}
+  .counter-nums b{color:var(--ink); font-weight:600;}
+  .counter-delta{
+    width:74px; flex-shrink:0; text-align:right;
+  }
+  .counter-delta input{
+    width:100%; text-align:center; font-size:14px; padding:7px 4px;
+    border:1px solid var(--line); border-radius:8px; background:var(--cream);
+    color:var(--clay); font-weight:600; font-family:'Zen Kaku Gothic New',sans-serif;
+  }
+  .counter-delta label{display:block; font-size:9.5px; color:var(--ink-soft); text-align:center; margin-top:3px;}
+  .gear{
+    background:none;border:none; color:var(--ink-soft); font-size:12px; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px; margin-top:12px; padding:0;
+  }
+
+  /* text sections */
+  .bullet-list{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .bullet-item{display:flex; align-items:flex-start; gap:6px;}
+  .bullet-item .arrow{color:var(--clay); font-size:14px; margin-top:9px; flex-shrink:0;}
+  .bullet-item textarea{
+    flex:1; resize:none; border:1px solid var(--line); border-radius:10px;
+    padding:9px 11px; font-size:14px; font-family:'Zen Kaku Gothic New',sans-serif;
+    background:var(--cream); color:var(--ink); line-height:1.6; min-height:38px;
+  }
+  .bullet-item .rm{
+    background:none;border:none; color:var(--ink-soft); font-size:16px; cursor:pointer; padding:6px;
+    flex-shrink:0;
+  }
+  .add-line{
+    background:none; border:1px dashed var(--clay-soft); color:var(--clay);
+    font-size:12.5px; padding:8px; border-radius:10px; width:100%; cursor:pointer;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+  }
+  textarea.freeform{
+    width:100%; border:1px solid var(--line); border-radius:10px;
+    padding:11px 12px; font-size:14px; font-family:'Zen Kaku Gothic New',sans-serif;
+    background:var(--cream); color:var(--ink); line-height:1.7; min-height:90px; resize:vertical;
+  }
+  input.title-input{
+    width:100%; border:1px solid var(--line); border-radius:10px;
+    padding:9px 12px; font-size:13.5px; font-family:'Zen Kaku Gothic New',sans-serif;
+    background:var(--cream); color:var(--clay); font-weight:600; margin-bottom:8px;
+  }
+  .hint{font-size:11px; color:var(--ink-soft); margin-top:8px; line-height:1.6;}
+
+  /* buttons */
+  .actions{display:flex; gap:10px; margin-top:4px;}
+  .btn{
+    flex:1; padding:14px; border-radius:14px; border:none; font-size:14.5px;
+    font-family:'Shippori Mincho', serif; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:transform .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--ink); color:var(--cream);}
+  .btn-secondary{background:var(--white); color:var(--clay); border:1px solid var(--clay-soft);}
+
+  /* history */
+  .history-list{display:flex; flex-direction:column; gap:8px;}
+  .history-item{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 14px; background:var(--cream); border-radius:12px; cursor:pointer;
+    border:1px solid transparent;
+  }
+  .history-item:active{border-color:var(--clay-soft);}
+  .history-item .hd{font-size:13px; color:var(--ink);}
+  .history-item .hd small{display:block; font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .history-item .harrow{color:var(--clay-soft); font-size:14px;}
+  .empty{font-size:12.5px; color:var(--ink-soft); text-align:center; padding:18px 0;}
+
+  /* toast */
+  .toast{
+    position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:var(--cream); padding:12px 20px; border-radius:30px;
+    font-size:13px; box-shadow:0 6px 24px rgba(0,0,0,0.2); opacity:0; pointer-events:none;
+    transition:all .35s ease; z-index:100; white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* modal */
+  .overlay{
+    position:fixed; inset:0; background:rgba(52,48,42,0.45); display:none;
+    align-items:flex-end; justify-content:center; z-index:200;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--cream); width:100%; max-width:520px; border-radius:20px 20px 0 0;
+    padding:24px 20px 30px; max-height:82vh; overflow-y:auto;
+  }
+  .modal h3{font-family:'Shippori Mincho', serif; font-size:16px; margin:0 0 16px;}
+  .field-row{display:flex; gap:10px; margin-bottom:12px;}
+  .field{flex:1;}
+  .field label{font-size:11.5px; color:var(--ink-soft); display:block; margin-bottom:5px;}
+  .field input{
+    width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px;
+    background:var(--white); font-size:14px; color:var(--ink);
+  }
+  .copytext{
+    white-space:pre-wrap; font-size:13px; line-height:1.8; background:var(--white);
+    border-radius:12px; padding:16px; border:1px solid var(--line); margin-bottom:14px;
+    max-height:44vh; overflow-y:auto;
+  }
+  .close-modal{
+    display:block; margin:0 auto; background:none; border:none; color:var(--ink-soft);
+    font-size:12.5px; text-decoration:underline; padding:10px; text-underline-offset:3px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="cloud">S O R A</span>
+    <span class="fox">🦊</span>
+    <p class="tagline" id="greeting">皆様、おはようございます！</p>
+    <h1>心をほどく、美しいひとさじ。</h1>
+    <p class="sub">手作りジャムを販売してます<br>grassin のまみです</p>
+  </div>
+
+  <div class="datebar">
+    <button class="navbtn" id="prevDay">‹</button>
+    <div class="datelabel">
+      <span id="dateMain">7月11日（土）</span>
+      <small id="dateSub" style="display:none"></small>
+    </div>
+    <button class="navbtn" id="nextDay">›</button>
+  </div>
+
+  <!-- counters -->
+  <div class="card">
+    <h2><span class="mark">🌟</span>まみ行動しろノック⚾️</h2>
+
+    <div class="counter-row">
+      <div class="counter-name">リール</div>
+      <div class="counter-bar-wrap">
+        <div class="counter-bar-bg"><div class="counter-bar-fill" id="reelBar"></div></div>
+        <div class="counter-nums"><b id="reelCur">19</b>/<span id="reelTgt">60</span></div>
+      </div>
+      <div class="counter-delta">
+        <input type="number" id="reelDelta" value="0" inputmode="numeric">
+        <label>今日 (+)</label>
+      </div>
+    </div>
+
+    <div class="counter-row">
+      <div class="counter-name">フィード</div>
+      <div class="counter-bar-wrap">
+        <div class="counter-bar-bg"><div class="counter-bar-fill" id="feedBar"></div></div>
+        <div class="counter-nums"><b id="feedCur">66</b>/<span id="feedTgt">100</span></div>
+      </div>
+      <div class="counter-delta">
+        <input type="number" id="feedDelta" value="0" inputmode="numeric">
+        <label>今日 (+)</label>
+      </div>
+    </div>
+
+    <button class="gear" id="openSettings">目標・現在数を調整する</button>
+  </div>
+
+  <!-- 気付き -->
+  <div class="card">
+    <h2><span class="mark">▷</span>気付き</h2>
+    <div class="bullet-list" id="kizukiList"></div>
+    <button class="add-line" id="addKizuki">＋ 気付きを追加</button>
+  </div>
+
+  <!-- 学び -->
+  <div class="card">
+    <h2><span class="mark">▷</span>学び</h2>
+    <input type="text" class="title-input" id="manabiTitle" placeholder="見出し（例：映画って凄い）">
+    <textarea class="freeform" id="manabiText" placeholder="気づいたことをゆっくり書いてください"></textarea>
+    <p class="hint">見出しは太字（**）にしてコピーされます</p>
+  </div>
+
+  <!-- 感想 -->
+  <div class="card">
+    <h2><span class="mark">▷</span>感想</h2>
+    <textarea class="freeform" id="kansouText" placeholder="今日の感想・意気込みなど"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="saveBtn">保存する</button>
+    <button class="btn btn-secondary" id="previewBtn">プレビュー</button>
+  </div>
+  <div class="actions" style="margin-top:10px;">
+    <button class="btn btn-primary" id="copyBtn">コピーする</button>
+  </div>
+
+  <div class="divider"><span>過去の日報</span></div>
+
+  <div class="card">
+    <div class="history-list" id="historyList"></div>
+    <div class="empty" id="historyEmpty" style="display:none;">まだ日報がありません</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- settings modal -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <h3>目標・現在数を調整</h3>
+    <div class="field-row">
+      <div class="field"><label>リール 現在数</label><input type="number" id="setReelCur"></div>
+      <div class="field"><label>リール 目標</label><input type="number" id="setReelTgt"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>フィード 現在数</label><input type="number" id="setFeedCur"></div>
+      <div class="field"><label>フィード 目標</label><input type="number" id="setFeedTgt"></div>
+    </div>
+    <p class="hint">ここでの「現在数」は、今日の(+)を含まない、これまでの合計です。</p>
+    <button class="btn btn-primary" id="saveSettings" style="width:100%; margin-top:8px;">更新する</button>
+    <button class="close-modal" id="closeSettings">閉じる</button>
+  </div>
+</div>
+
+<!-- copy preview modal -->
+<div class="overlay" id="copyOverlay">
+  <div class="modal">
+    <h3 id="copyModalTitle">提出用テキスト</h3>
+    <div class="copytext" id="copyPreview"></div>
+    <button class="btn btn-primary" id="doCopy" style="width:100%; margin-bottom:10px;">クリップボードにコピー</button>
+    <button class="close-modal" id="closeCopy">閉じる</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORE_KEY = 'grassin_reports_v1';
+  const COUNTER_KEY = 'grassin_counters_v1';
+
+  const weekdays = ['日','月','火','水','木','金','土'];
+
+  function fmtDate(d){
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+  function fmtLabel(d){
+    return (d.getMonth()+1)+'月'+d.getDate()+'日（'+weekdays[d.getDay()]+'）';
+  }
+  function todayKey(){ return fmtDate(new Date()); }
+
+  // プレビュー版：端末保存ではなく画面内メモリに保持します（閉じると消えます）
+  window.__grassinMemory = window.__grassinMemory || {
+    reports: {},
+    counters: { reelBase:19, reelTarget:60, feedBase:66, feedTarget:100 }
+  };
+  function loadReports(){
+    return window.__grassinMemory.reports;
+  }
+  function saveReports(obj){
+    window.__grassinMemory.reports = obj;
+  }
+  function loadCounters(){
+    return window.__grassinMemory.counters;
+  }
+  function saveCounters(c){
+    window.__grassinMemory.counters = c;
+  }
+
+  let reports = loadReports();
+  let counters = loadCounters();
+  let currentDate = new Date();
+
+  // ---------- greeting ----------
+  function greetingText(){
+    const h = new Date().getHours();
+    let g = 'こんばんは';
+    if(h >= 4 && h < 11) g = 'おはようございます';
+    else if(h >= 11 && h < 17) g = 'こんにちは';
+    else g = 'こんばんは';
+    return '皆様、'+g+'！';
+  }
+  document.getElementById('greeting').textContent = greetingText();
+
+  // ---------- elements ----------
+  const dateMain = document.getElementById('dateMain');
+  const dateSub = document.getElementById('dateSub');
+  const reelDelta = document.getElementById('reelDelta');
+  const feedDelta = document.getElementById('feedDelta');
+  const kizukiList = document.getElementById('kizukiList');
+  const manabiTitle = document.getElementById('manabiTitle');
+  const manabiText = document.getElementById('manabiText');
+  const kansouText = document.getElementById('kansouText');
+
+  function makeBulletRow(value){
+    const row = document.createElement('div');
+    row.className = 'bullet-item';
+    row.innerHTML = '<span class="arrow">▷</span><textarea rows="1"></textarea><button class="rm">✕</button>';
+    const ta = row.querySelector('textarea');
+    ta.value = value || '';
+    autoGrow(ta);
+    ta.addEventListener('input', ()=>autoGrow(ta));
+    row.querySelector('.rm').addEventListener('click', ()=>row.remove());
+    return row;
+  }
+  function autoGrow(ta){
+    ta.style.height = 'auto';
+    ta.style.height = (ta.scrollHeight)+'px';
+  }
+  document.getElementById('addKizuki').addEventListener('click', ()=>{
+    kizukiList.appendChild(makeBulletRow(''));
+  });
+
+  // ---------- counters render ----------
+  function renderCounters(){
+    const rDelta = parseInt(reelDelta.value)||0;
+    const fDelta = parseInt(feedDelta.value)||0;
+    const reelCur = counters.reelBase + rDelta;
+    const feedCur = counters.feedBase + fDelta;
+    document.getElementById('reelCur').textContent = reelCur;
+    document.getElementById('reelTgt').textContent = counters.reelTarget;
+    document.getElementById('feedCur').textContent = feedCur;
+    document.getElementById('feedTgt').textContent = counters.feedTarget;
+    document.getElementById('reelBar').style.width = Math.min(100,(reelCur/counters.reelTarget)*100)+'%';
+    document.getElementById('feedBar').style.width = Math.min(100,(feedCur/counters.feedTarget)*100)+'%';
+  }
+  reelDelta.addEventListener('input', renderCounters);
+  feedDelta.addEventListener('input', renderCounters);
+
+  // ---------- load a given date into the form ----------
+  function loadDateIntoForm(dateKey){
+    const d = new Date(dateKey+'T00:00:00');
+    dateMain.textContent = fmtLabel(d);
+    dateSub.style.display = (dateKey === todayKey()) ? 'block' : 'none';
+
+    const rec = reports[dateKey];
+    kizukiList.innerHTML = '';
+    if(rec){
+      reelDelta.value = rec.reelDelta ?? 0;
+      feedDelta.value = rec.feedDelta ?? 0;
+      manabiTitle.value = rec.manabiTitle || '';
+      manabiText.value = rec.manabiText || '';
+      kansouText.value = rec.kansouText || '';
+      (rec.kizuki && rec.kizuki.length ? rec.kizuki : ['']).forEach(k=>kizukiList.appendChild(makeBulletRow(k)));
+    } else {
+      reelDelta.value = 0;
+      feedDelta.value = 0;
+      manabiTitle.value = '';
+      manabiText.value = '';
+      kansouText.value = '';
+      kizukiList.appendChild(makeBulletRow(''));
+    }
+    renderCounters();
+  }
+
+  document.getElementById('prevDay').addEventListener('click', ()=>{
+    currentDate.setDate(currentDate.getDate()-1);
+    loadDateIntoForm(fmtDate(currentDate));
+  });
+  document.getElementById('nextDay').addEventListener('click', ()=>{
+    currentDate.setDate(currentDate.getDate()+1);
+    loadDateIntoForm(fmtDate(currentDate));
+  });
+
+  // ---------- collect current form state ----------
+  function collectForm(){
+    const kizuki = Array.from(kizukiList.querySelectorAll('textarea')).map(t=>t.value.trim()).filter(v=>v);
+    return {
+      reelDelta: parseInt(reelDelta.value)||0,
+      feedDelta: parseInt(feedDelta.value)||0,
+      manabiTitle: manabiTitle.value.trim(),
+      manabiText: manabiText.value.trim(),
+      kansouText: kansouText.value.trim(),
+      kizuki
+    };
+  }
+
+  // ---------- toast ----------
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+  }
+
+  // ---------- save ----------
+  function doSave(){
+    const key = fmtDate(currentDate);
+    const data = collectForm();
+    reports[key] = data;
+    saveReports(reports);
+    renderHistory();
+    showToast('保存しました 🦊');
+  }
+  document.getElementById('saveBtn').addEventListener('click', doSave);
+
+  // ---------- history ----------
+  function renderHistory(){
+    const list = document.getElementById('historyList');
+    const empty = document.getElementById('historyEmpty');
+    const keys = Object.keys(reports).sort().reverse();
+    list.innerHTML = '';
+    if(keys.length === 0){ empty.style.display='block'; return; }
+    empty.style.display='none';
+    keys.slice(0,60).forEach(k=>{
+      const d = new Date(k+'T00:00:00');
+      const rec = reports[k];
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      const preview = (rec.kizuki && rec.kizuki[0]) ? rec.kizuki[0].slice(0,18) : (rec.kansouText||'').slice(0,18);
+      item.innerHTML = '<div class="hd">'+fmtLabel(d)+'<small>'+(preview||'記録あり')+'</small></div><div class="harrow">›</div>';
+      item.addEventListener('click', ()=>{
+        currentDate = new Date(k+'T00:00:00');
+        loadDateIntoForm(k);
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+      list.appendChild(item);
+    });
+  }
+
+  // ---------- settings modal ----------
+  const settingsOverlay = document.getElementById('settingsOverlay');
+  document.getElementById('openSettings').addEventListener('click', ()=>{
+    document.getElementById('setReelCur').value = counters.reelBase;
+    document.getElementById('setReelTgt').value = counters.reelTarget;
+    document.getElementById('setFeedCur').value = counters.feedBase;
+    document.getElementById('setFeedTgt').value = counters.feedTarget;
+    settingsOverlay.classList.add('show');
+  });
+  document.getElementById('closeSettings').addEventListener('click', ()=>settingsOverlay.classList.remove('show'));
+  document.getElementById('saveSettings').addEventListener('click', ()=>{
+    counters.reelBase = parseInt(document.getElementById('setReelCur').value)||0;
+    counters.reelTarget = parseInt(document.getElementById('setReelTgt').value)||1;
+    counters.feedBase = parseInt(document.getElementById('setFeedCur').value)||0;
+    counters.feedTarget = parseInt(document.getElementById('setFeedTgt').value)||1;
+    saveCounters(counters);
+    renderCounters();
+    settingsOverlay.classList.remove('show');
+    showToast('目標を更新しました');
+  });
+
+  // ---------- copy ----------
+  const copyOverlay = document.getElementById('copyOverlay');
+  function buildCopyText(){
+    const data = collectForm();
+    const reelCur = counters.reelBase + data.reelDelta;
+    const feedCur = counters.feedBase + data.feedDelta;
+    const signRD = data.reelDelta >= 0 ? '+'+data.reelDelta : data.reelDelta;
+    const signFD = data.feedDelta >= 0 ? '+'+data.feedDelta : data.feedDelta;
+
+    const kizukiBlock = data.kizuki.length
+      ? data.kizuki.map(k=>'▷'+k).join('\n')
+      : '▷';
+
+    const manabiHeader = data.manabiTitle ? '▷**'+data.manabiTitle+'**\n' : '';
+    const manabiBlock = (manabiHeader + (data.manabiText||'')).trim();
+
+    return [
+      greetingText(),
+      '心をほどく、美しいひとさじ。',
+      '手作りジャムを販売してます',
+      'grassin のまみです🦊',
+      '',
+      '🌟まみ行動しろノック⚾️',
+      'リール : '+reelCur+'/'+counters.reelTarget+' ('+signRD+')',
+      'フィード : '+feedCur+'/'+counters.feedTarget+' ('+signFD+')',
+      '-----------------',
+      '',
+      '【気付き】',
+      kizukiBlock,
+      '',
+      '【学び】',
+      manabiBlock,
+      '',
+      '【感想】',
+      data.kansouText||'',
+      '',
+      '今日もよろしくお願い致します🦊'
+    ].join('\n');
+  }
+  document.getElementById('previewBtn').addEventListener('click', ()=>{
+    document.getElementById('copyModalTitle').textContent = 'プレビュー';
+    document.getElementById('copyPreview').textContent = buildCopyText();
+    copyOverlay.classList.add('show');
+  });
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    doSave();
+    document.getElementById('copyModalTitle').textContent = '提出用テキスト';
+    document.getElementById('copyPreview').textContent = buildCopyText();
+    copyOverlay.classList.add('show');
+  });
+  document.getElementById('closeCopy').addEventListener('click', ()=>copyOverlay.classList.remove('show'));
+  document.getElementById('doCopy').addEventListener('click', async ()=>{
+    const text = buildCopyText();
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast('コピーしました 📋');
+    }catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('コピーしました 📋');
+    }
+    copyOverlay.classList.remove('show');
+  });
+
+  // ---------- init ----------
+  loadDateIntoForm(todayKey());
+  renderHistory();
+})();
+</script>
+</body>
+</html>
