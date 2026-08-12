@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="原因チェック">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FAF6EE'/%3E%3Ctext x='50' y='62' font-size='54' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23FAF6EE'/%3E%3Ctext x='50' y='62' font-size='54' text-anchor='middle'%3E%E2%9C%8D%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<title>Instagram販売 原因チェックリスト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF6EE;
+    --cream-deep: #F1EADB;
+    --ink: #34302A;
+    --ink-soft: #6B6459;
+    --clay: #AD6748;
+    --clay-soft: #E7CFC1;
+    --sage: #8C9574;
+    --sage-soft: #DDE2CE;
+    --sky: #B9C7CE;
+    --line: #E4DBCB;
+    --white: #FFFFFF;
+    --radius: 18px;
+    --shadow: 0 2px 14px rgba(90, 70, 50, 0.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 400px at 50% -80px, rgba(185,199,206,0.35), transparent 60%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 18px;}
+
+  .hero{padding:34px 0 20px;text-align:center;}
+  .hero .fox{font-size:32px;display:block;margin-bottom:6px;}
+  .hero h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:600;font-size:20px;margin:0 0 8px;line-height:1.5;
+  }
+  .hero p{font-size:12.5px;color:var(--ink-soft);margin:0;line-height:1.8;}
+
+  .progress-wrap{
+    background:var(--white);border-radius:14px;padding:12px 16px;
+    box-shadow:var(--shadow);margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .progress-bar-bg{flex:1;height:7px;background:var(--cream-deep);border-radius:6px;overflow:hidden;}
+  .progress-bar-fill{height:100%;background:linear-gradient(90deg, var(--sage), var(--clay));border-radius:6px;transition:width .3s ease;width:0%;}
+  .progress-label{font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+  .progress-label b{color:var(--clay);}
+
+  .card{
+    background:var(--white);border-radius:var(--radius);
+    padding:18px 18px 8px;margin-bottom:16px;box-shadow:var(--shadow);
+    border:1px solid rgba(180,150,120,0.08);
+  }
+  .card h2{
+    font-family:'Shippori Mincho', serif;font-size:15px;font-weight:600;
+    margin:0 0 4px;display:flex;align-items:center;gap:8px;color:var(--ink);
+  }
+  .card h2 .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;background:var(--clay-soft);
+    color:var(--clay);font-size:12px;font-weight:700;flex-shrink:0;
+  }
+  .card .subtitle{font-size:11.5px;color:var(--ink-soft);margin:0 0 14px 30px;}
+
+  .check-item{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:11px 2px;border-bottom:1px dashed var(--line);cursor:pointer;
+  }
+  .check-item:last-child{border-bottom:none;}
+  .check-item input{display:none;}
+  .checkbox{
+    width:20px;height:20px;border-radius:6px;border:1.5px solid var(--clay-soft);
+    flex-shrink:0;margin-top:1px;position:relative;transition:all .15s ease;
+    background:var(--cream);
+  }
+  .check-item input:checked + .checkbox{
+    background:var(--clay);border-color:var(--clay);
+  }
+  .check-item input:checked + .checkbox::after{
+    content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;
+    border:solid var(--white);border-width:0 2px 2px 0;transform:rotate(45deg);
+  }
+  .check-item .txt{font-size:13.5px;line-height:1.6;color:var(--ink);}
+  .check-item input:checked ~ .txt{color:var(--ink-soft);}
+
+  .actions{display:flex;gap:10px;margin-top:6px;}
+  .btn{
+    flex:1;padding:15px;border-radius:14px;border:none;font-size:14.5px;
+    font-family:'Shippori Mincho', serif;font-weight:600;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    transition:transform .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--ink);color:var(--cream);}
+  .btn-secondary{background:var(--white);color:var(--clay);border:1px solid var(--clay-soft);}
+
+  /* result */
+  .result-overlay{
+    position:fixed;inset:0;background:rgba(52,48,42,0.5);display:none;
+    align-items:flex-end;justify-content:center;z-index:200;
+  }
+  .result-overlay.show{display:flex;}
+  .result-modal{
+    background:var(--cream);width:100%;max-width:520px;border-radius:22px 22px 0 0;
+    padding:30px 22px 32px;max-height:88vh;overflow-y:auto;
+    animation:slideUp .35s ease;
+  }
+  @keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .result-fox{font-size:36px;text-align:center;display:block;margin-bottom:8px;}
+  .result-eyebrow{
+    text-align:center;font-size:11.5px;color:var(--ink-soft);
+    letter-spacing:.15em;margin-bottom:8px;
+  }
+  .result-title{
+    font-family:'Shippori Mincho', serif;font-size:21px;font-weight:700;
+    text-align:center;color:var(--clay);margin:0 0 18px;line-height:1.5;
+  }
+  .result-desc{
+    background:var(--white);border-radius:14px;padding:18px;margin-bottom:16px;
+    font-size:14px;line-height:1.85;color:var(--ink);border:1px solid var(--line);
+  }
+  .result-desc b{color:var(--clay);}
+  .breakdown{margin-bottom:20px;}
+  .breakdown-row{
+    display:flex;align-items:center;gap:10px;padding:8px 0;
+  }
+  .breakdown-name{width:96px;flex-shrink:0;font-size:12.5px;color:var(--ink-soft);}
+  .breakdown-bar-bg{flex:1;height:8px;background:var(--cream-deep);border-radius:6px;overflow:hidden;}
+  .breakdown-bar-fill{height:100%;border-radius:6px;background:var(--clay-soft);transition:width .5s ease;}
+  .breakdown-bar-fill.top{background:linear-gradient(90deg, var(--sage), var(--clay));}
+  .breakdown-count{width:32px;text-align:right;font-size:12.5px;color:var(--ink-soft);flex-shrink:0;}
+  .breakdown-count.top{color:var(--clay);font-weight:700;}
+  .result-hint{
+    font-size:11.5px;color:var(--ink-soft);text-align:center;line-height:1.8;margin-bottom:18px;
+  }
+  .close-result{
+    display:block;margin:0 auto;background:none;border:none;color:var(--ink-soft);
+    font-size:12.5px;text-decoration:underline;padding:10px;text-underline-offset:3px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="fox">✍️</span>
+    <h1>なぜ売れないのか<br>Instagram原因チェックリスト</h1>
+    <p>あてはまる項目にチェックを入れてください。<br>最も多いカテゴリが、今月のInstagram改善ポイントです。</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progFill"></div></div>
+    <div class="progress-label"><b id="progCount">0</b>/24 チェック済み</div>
+  </div>
+
+
+  <div id="checklistContainer"></div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="resetBtn">リセット</button>
+    <button class="btn btn-primary" id="judgeBtn">判定する</button>
+  </div>
+
+</div>
+
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-modal">
+    <span class="result-fox">✅</span>
+    <p class="result-eyebrow" id="resultEyebrow">改善POINT</p>
+    <h3 class="result-title" id="resultTitle"></h3>
+    <div class="result-desc" id="resultDesc"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <p class="result-hint" id="resultHint"></p>
+    <button class="close-result" id="closeResult">閉じる</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const categories = [
+    {
+      key:'shukyaku',
+      title:'集客',
+      subtitle:'見てもらえているか',
+      items:[
+        'リールの再生が安定しない',
+        '保存数が少ない／増えない',
+        'プロフィールアクセス数が弱い',
+        '新規フォロワーが増えにくい',
+        'LINE登録につながらない',
+        '投稿に「誰が対象か」伝わっていない'
+      ],
+      conclusion:'見られていない。露出・導線を増やす改善が必要です。',
+      detail:'まずは投稿がお客様の目に留まる回数そのものを増やすフェーズ。リールの本数・保存されやすい構成・プロフィールへの動線を見直すと、次の商品の魅せ方の効果も伸びていきます。'
+    },
+    {
+      key:'miseka',
+      title:'商品の魅せ方',
+      subtitle:'価値が伝わっているか',
+      items:[
+        '写真の明るさ・統一感にばらつきがある',
+        '世界観が毎回違って見える',
+        'デザインの意図（ストーリー）が伝わらない',
+        '他ブランドとの違いが伝わりにくい',
+        '価格の根拠が弱い／価格が高く感じられる',
+        '投稿で「なぜその作品なのか」が言語化されていない'
+      ],
+      conclusion:'魅力はあるのに“伝わる前に離脱”されています。',
+      detail:'写真の色味や光の当て方、雰囲気に統一感が出ると、フィード全体の印象がぐっと整います。同じフィルターやトーンを使う、撮影する時間帯や光の向きを揃えるだけでも変わります。さらに、身につけた時や使っているシーンの写真を加えると、サイズ感や使い心地が伝わり、購入後のイメージが湧きやすくなります。'
+    },
+    {
+      key:'hasshin',
+      title:'発信設計',
+      subtitle:'伝える順番が正しいか',
+      items:[
+        '共感投稿ばかりで“購入導線”の投稿が足りない',
+        '告知が直前になりがち',
+        'テーマ発表→詳細→販売日 の流れが毎回バラバラ',
+        '投稿の役割（共感・教育・行動）を使い分けていない',
+        '販売会時の投稿計画が決まっていない',
+        '発信に“ストーリーとしての流れ”がない'
+      ],
+      conclusion:'発信はできているのに、伝わる順番が最適化されていません。',
+      detail:'共感は取れているので、あとは順番の設計です。テーマ発表→詳細→販売日案内という流れをあらかじめ決めておくと、同じ投稿量でも購入への流れが自然になります。'
+    },
+    {
+      key:'donsen',
+      title:'購入導線',
+      subtitle:'買うまでの道がスムーズか',
+      items:[
+        'プロフィールのリンクが分かりにくい',
+        '販売ページで離脱されている（アクセスはあるのに購入されない）',
+        '商品ページの写真や説明が整っていない',
+        'サイズ／使い方／注意点で迷わせている',
+        '購入手順が複雑と言われたことがある',
+        '販売会の案内が1投稿で完結していない'
+      ],
+      conclusion:'興味はあるのに、買う直前で“つまづいて”います。',
+      detail:'ここまでの流れはうまくいっていて、最後の一歩だけが惜しい状態。プロフィールから購入ページまでの導線を短く・迷いなくすることに集中すると、CVRの改善に直結します。'
+    }
+  ];
+
+  const container = document.getElementById('checklistContainer');
+  categories.forEach((cat, ci)=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    let itemsHtml = '';
+    cat.items.forEach((item, ii)=>{
+      const id = 'chk_'+ci+'_'+ii;
+      itemsHtml += `
+        <label class="check-item" for="${id}">
+          <input type="checkbox" id="${id}" data-cat="${cat.key}">
+          <span class="checkbox"></span>
+          <span class="txt">${item}</span>
+        </label>`;
+    });
+    card.innerHTML = `
+      <h2><span class="num">${ci+1}</span>${cat.title}</h2>
+      <p class="subtitle">${cat.subtitle}</p>
+      ${itemsHtml}
+    `;
+    container.appendChild(card);
+  });
+
+  const allCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+  const progFill = document.getElementById('progFill');
+  const progCount = document.getElementById('progCount');
+
+  function updateProgress(){
+    const checked = allCheckboxes.filter(c=>c.checked).length;
+    progCount.textContent = checked;
+    progFill.style.width = (checked/allCheckboxes.length*100)+'%';
+  }
+  allCheckboxes.forEach(c=>c.addEventListener('change', updateProgress));
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    allCheckboxes.forEach(c=>c.checked=false);
+    updateProgress();
+  });
+
+  const overlay = document.getElementById('resultOverlay');
+  document.getElementById('judgeBtn').addEventListener('click', ()=>{
+    const counts = {};
+    categories.forEach(cat=>counts[cat.key]=0);
+    allCheckboxes.forEach(c=>{ if(c.checked) counts[c.dataset.cat]++; });
+
+    const totalChecked = allCheckboxes.filter(c=>c.checked).length;
+
+    // find max
+    let maxCount = -1;
+    categories.forEach(cat=>{ if(counts[cat.key] > maxCount) maxCount = counts[cat.key]; });
+    const topCats = categories.filter(cat=>counts[cat.key]===maxCount);
+
+    const eyebrowEl = document.getElementById('resultEyebrow');
+    const titleEl = document.getElementById('resultTitle');
+    const descEl = document.getElementById('resultDesc');
+    const hintEl = document.getElementById('resultHint');
+
+    if(totalChecked === 0){
+      eyebrowEl.textContent = '';
+      titleEl.textContent = 'まだ何もチェックされていません';
+      descEl.innerHTML = '気になる項目に、ひとつずつチェックを入れてみてください。';
+      hintEl.textContent = '';
+    } else if(topCats.length > 1 && maxCount > 0){
+      eyebrowEl.textContent = '改善POINT（複数）';
+      titleEl.textContent = topCats.map(c=>c.title).join(' ／ ') + ' が同点です';
+      descEl.innerHTML = topCats.map(c=>`<b>${c.title}</b>：${c.conclusion}`).join('<br><br>');
+      hintEl.textContent = '同点の場合は、取り組みやすい方から着手するのがおすすめです。';
+    } else {
+      const top = topCats[0];
+      eyebrowEl.textContent = '改善POINT';
+      titleEl.textContent = top.title;
+      descEl.innerHTML = `<b>結論：</b>${top.conclusion}<br><br>${top.detail}`;
+      hintEl.textContent = '今月はここに時間を使うと、次の一歩が動きやすくなります。';
+    }
+
+    const breakdownEl = document.getElementById('breakdown');
+    breakdownEl.innerHTML = '';
+    categories.forEach(cat=>{
+      const c = counts[cat.key];
+      const isTop = topCats.some(t=>t.key===cat.key) && maxCount > 0;
+      const pct = (c/6*100);
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = `
+        <div class="breakdown-name">${cat.title}</div>
+        <div class="breakdown-bar-bg"><div class="breakdown-bar-fill ${isTop?'top':''}" style="width:${pct}%"></div></div>
+        <div class="breakdown-count ${isTop?'top':''}">${c}/6</div>
+      `;
+      breakdownEl.appendChild(row);
+    });
+
+    overlay.classList.add('show');
+  });
+
+  document.getElementById('closeResult').addEventListener('click', ()=>overlay.classList.remove('show'));
+})();
+</script>
+</body>
+</html>
