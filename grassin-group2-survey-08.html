@@ -277,7 +277,7 @@
   const ADMIN_PASSWORD = 'grassin08'; // まみさんが自由に変更してください
 
   // ▼▼▼ 初期セットアップ後、ここにkvdb.ioの「保管庫ID」を入れてください ▼▼▼
-  const BUCKET_ID = 'ABphki4QMYbEf8dXx1Qech';
+  const BUCKET_ID = ''; // 例: 'Fd55uogXyxYdnXJvnyN8Xo'
   // ▲▲▲ ここまで ▲▲▲
 
   const KVDB_BASE = 'https://kvdb.io';
@@ -316,7 +316,7 @@
     const res = await fetch(KVDB_BASE + '/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ email: 'grassin.group2@example.com' }).toString()
+      body: new URLSearchParams({ email: 'foxy8127mami@gmail.com' }).toString()
     });
     if(!res.ok) throw new Error('bucket create failed: ' + res.status);
     return (await res.text()).trim();
