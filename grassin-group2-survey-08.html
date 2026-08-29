@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>グループ2 8月アンケート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF6EE;
+    --cream-deep: #F1EADB;
+    --opt-bg: #F6EFE2;
+    --ink: #34302A;
+    --ink-soft: #6B6459;
+    --clay: #AD6748;
+    --clay-soft: #E7CFC1;
+    --sage: #8C9574;
+    --sage-soft: #DDE2CE;
+    --line: #E4DBCB;
+    --white: #FFFFFF;
+    --radius: 20px;
+    --shadow: 0 2px 14px rgba(90, 70, 50, 0.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 400px at 50% -80px, rgba(185,199,206,0.30), transparent 60%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    padding-bottom:64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px;}
+
+  .hero{
+    padding:34px 0 22px;
+    text-align:center;
+  }
+  .hero .eyebrow{
+    font-size:10px;
+    letter-spacing:.5em;
+    color:var(--clay);
+    margin-bottom:12px;
+  }
+  .hero .eyebrow .rule{color:var(--line);}
+  .hero h1{
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0;
+    color:var(--ink);
+    line-height:1.5;
+  }
+
+  .card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:26px 20px 28px;
+    margin-bottom:18px;
+    box-shadow:var(--shadow);
+  }
+  .card .anon-note{
+    font-size:11px;
+    color:var(--ink-soft);
+    margin:0 0 24px;
+  }
+
+  .qblock{margin-bottom:26px;}
+  .qtext{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.75;
+    margin:0 0 12px;
+    font-weight:500;
+  }
+  .qtext .qtag{
+    display:inline-block;
+    font-size:9px;
+    color:var(--clay);
+    margin-right:2px;
+  }
+
+  .opt-list{display:flex; flex-direction:column; gap:9px;}
+  .opt{
+    display:block;
+    width:100%;
+    text-align:left;
+    background:var(--opt-bg);
+    border:none;
+    border-radius:14px;
+    padding:12px 16px;
+    font-size:12.5px;
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .opt:active{transform:scale(0.98);}
+  .opt.selected{
+    background:linear-gradient(90deg, rgba(140,149,116,0.22), rgba(173,103,72,0.20));
+    box-shadow: inset 0 0 0 1.5px var(--clay);
+    font-weight:600;
+  }
+
+  .sub-field{margin-top:12px; display:none;}
+  .sub-field.show{display:block;}
+  .sub-field label{
+    display:block;
+    font-size:10px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  textarea{
+    width:100%;
+    border:none;
+    border-radius:14px;
+    padding:13px 14px;
+    font-size:12.5px;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    background:var(--opt-bg);
+    color:var(--ink);
+    line-height:1.7;
+    min-height:84px;
+    resize:vertical;
+  }
+  textarea::placeholder{color:#B0A794;}
+
+  .btn{
+    width:100%;
+    padding:15px;
+    border-radius:18px;
+    border:none;
+    font-size:13px;
+    font-family:'Shippori Mincho', serif;
+    font-weight:700;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .15s ease;
+    margin-top:6px;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--ink); color:var(--cream);}
+  .btn-primary:disabled{background:var(--line); color:var(--ink-soft); cursor:not-allowed;}
+  .hint-bottom{
+    font-size:9.5px; color:var(--ink-soft); text-align:center; margin-top:11px; line-height:1.8;
+  }
+
+  .admin-link-wrap{text-align:center; padding:6px 0 20px;}
+  .admin-link{
+    background:none; border:none; color:var(--ink-soft);
+    font-size:11px; cursor:pointer; padding:8px;
+    text-decoration:underline; text-underline-offset:3px;
+    font-family:'Zen Kaku Gothic New',sans-serif;
+  }
+
+  /* thank you screen */
+  .done-wrap{display:none; text-align:center; padding:60px 20px;}
+  .done-wrap.show{display:block;}
+  .done-wrap .fox{font-size:39px; display:block; margin-bottom:16px;}
+  .done-wrap h2{font-family:'Shippori Mincho', serif; font-size:16px; margin:0 0 12px; color:var(--ink);}
+  .done-wrap p{font-size:11.5px; color:var(--ink-soft); line-height:2; margin:0;}
+  .form-area.hide{display:none;}
+
+  /* admin overlay */
+  .overlay{
+    position:fixed; inset:0; background:rgba(52,48,42,0.5);
+    display:none; align-items:center; justify-content:center; z-index:300; padding:20px;
+  }
+  .overlay.show{display:flex;}
+  .pw-modal{
+    background:var(--white); border-radius:20px; padding:26px 22px; width:100%; max-width:340px;
+  }
+  .pw-modal h3{font-family:'Shippori Mincho', serif; font-size:13.5px; margin:0 0 14px; color:var(--ink);}
+  .pw-modal input{
+    width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:12px;
+    font-size:12.5px; background:var(--cream); color:var(--ink); margin-bottom:10px;
+  }
+  .pw-modal .pw-error{font-size:10px; color:var(--clay); margin-bottom:10px; display:none;}
+  .pw-modal .pw-error.show{display:block;}
+  .pw-actions{display:flex; gap:8px;}
+  .pw-actions .btn{margin-top:0; padding:13px; font-size:13px;}
+  .btn-secondary{background:var(--cream-deep); color:var(--ink);}
+
+  /* admin dashboard */
+  .admin-wrap{display:none;}
+  .admin-wrap.show{display:block;}
+  .admin-header{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .admin-header h1{font-family:'Shippori Mincho', serif; font-size:16px; margin:0;}
+  .admin-back{background:none; border:none; color:var(--clay); font-size:11px; cursor:pointer; text-decoration:underline;}
+  .admin-count{font-size:10.5px; color:var(--ink-soft); margin-bottom:18px;}
+
+  .result-card{background:var(--white); border-radius:18px; padding:18px 16px; margin-bottom:14px; box-shadow:var(--shadow);}
+  .result-q{font-size:11.5px; font-weight:600; color:var(--ink); margin:0 0 13px; line-height:1.7;}
+  .bar-row{margin-bottom:9px;}
+  .bar-label{display:flex; justify-content:space-between; font-size:10.5px; color:var(--ink-soft); margin-bottom:4px;}
+  .bar-bg{height:8px; background:var(--cream-deep); border-radius:6px; overflow:hidden;}
+  .bar-fill{height:100%; background:linear-gradient(90deg, var(--sage), var(--clay)); border-radius:6px;}
+  .free-list{display:flex; flex-direction:column; gap:8px;}
+  .free-item{background:var(--cream); border-radius:12px; padding:10px 12px; font-size:11.5px; color:var(--ink); line-height:1.7;}
+  .free-empty{font-size:10.5px; color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">— グループ2 —</div>
+    <h1>グループ2 売り上げUP道場<br>8月アンケート</h1>
+  </div>
+
+  <div class="form-area" id="formArea">
+    <div class="card">
+      <p class="anon-note">※匿名で回答されます。名前などは記録されません。</p>
+      <div id="questionsContainer"></div>
+      <button class="btn btn-primary" id="submitBtn" disabled>📩 回答を送信する</button>
+      <div class="hint-bottom" id="submitHint">選択式の質問（Q1〜Q9）にすべて回答すると送信できます</div>
+    </div>
+
+    <div class="admin-link-wrap">
+      <button class="admin-link" id="openAdminBtn">🔒 結果を見る（管理者用）</button>
+    </div>
+  </div>
+
+  <div class="setup-wrap" id="setupWrap" style="display:none;">
+    <div class="card">
+      <p class="anon-note" style="margin-bottom:16px;">初期セットアップ（最初の1回だけ）</p>
+      <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.9; margin:0 0 16px;">
+        まだ回答を保存する場所が作られていません。下のボタンを押すと、回答を保管する場所（保管庫）が新しく作られます。<br><br>
+        作成後に表示される「保管庫ID」を、Claudeとのチャットに貼り付けて教えてください。次のバージョンにそのIDを組み込んで、全員が同じ保管庫を使えるようにします。
+      </p>
+      <button class="btn btn-primary" id="createBucketBtn">保管庫を新しく作る</button>
+      <div id="setupResult" style="display:none; margin-top:16px;">
+        <p style="font-size:12px; color:var(--ink-soft); margin:0 0 6px;">保管庫ID（これをコピーしてClaudeに送ってください）</p>
+        <div style="background:var(--opt-bg); border-radius:12px; padding:12px 14px; font-size:13px; word-break:break-all; user-select:all;" id="bucketIdDisplay"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="done-wrap" id="doneWrap">
+    <span class="fox">🦊</span>
+    <h2>回答ありがとうございました</h2>
+    <p>あたたかいご協力に感謝します。<br>いただいた声は、来月の活動に大切に活かしていきます。</p>
+  </div>
+
+  <div class="admin-wrap" id="adminWrap">
+    <div class="admin-header">
+      <h1>結果一覧</h1>
+      <button class="admin-back" id="closeAdminBtn">アンケートに戻る</button>
+    </div>
+    <div class="admin-count" id="adminCount">読み込み中…</div>
+    <div id="adminResults"></div>
+  </div>
+
+</div>
+
+<div class="overlay" id="pwOverlay">
+  <div class="pw-modal">
+    <h3>管理者用パスワード</h3>
+    <input type="password" id="pwInput" placeholder="パスワードを入力">
+    <div class="pw-error" id="pwError">パスワードが違います</div>
+    <div class="pw-actions">
+      <button class="btn btn-secondary" id="pwCancel" style="flex:1;">キャンセル</button>
+      <button class="btn btn-primary" id="pwConfirm" style="flex:1;">開く</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const RESULT_KEY_PREFIX = 'response-';
+  const ADMIN_PASSWORD = 'grassin08'; // まみさんが自由に変更してください
+
+  // ▼▼▼ 初期セットアップ後、ここにkvdb.ioの「保管庫ID」を入れてください ▼▼▼
+  const BUCKET_ID = ''; // 例: 'Fd55uogXyxYdnXJvnyN8Xo'
+  // ▲▲▲ ここまで ▲▲▲
+
+  const KVDB_BASE = 'https://kvdb.io';
+
+  const kvdbStore = {
+    async set(key, value){
+      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/' + encodeURIComponent(key), {
+        method: 'POST',
+        body: value
+      });
+      if(!res.ok) throw new Error('kvdb set failed: ' + res.status);
+      return { key, value };
+    },
+    async get(key){
+      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/' + encodeURIComponent(key));
+      if(!res.ok) throw new Error('kvdb get failed: ' + res.status);
+      const value = await res.text();
+      return { key, value };
+    },
+    async list(prefix){
+      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/?prefix=' + encodeURIComponent(prefix) + '&format=json');
+      if(!res.ok) throw new Error('kvdb list failed: ' + res.status);
+      const text = await res.text();
+      let keys = [];
+      try{
+        const parsed = JSON.parse(text);
+        keys = Array.isArray(parsed) ? parsed : [];
+      }catch(e){
+        keys = text.split('\n').map(s=>s.trim()).filter(Boolean);
+      }
+      return { keys };
+    }
+  };
+
+  async function createBucket(){
+    const res = await fetch(KVDB_BASE + '/', { method: 'POST' });
+    if(!res.ok) throw new Error('bucket create failed: ' + res.status);
+    return (await res.text()).trim();
+  }
+
+  const storageApi = kvdbStore;
+
+  const scaleOptions = ['そう思う','ややそう思う','あまりそう思わない','そう思わない'];
+
+  const questions = [
+    { id:'q1', num:1, type:'scale', text:'グループ2の雰囲気は良かったと感じますか？' },
+    { id:'q2', num:2, type:'scale', text:'先月と比べて、グループ2への慣れや安心感は増しましたか？' },
+    { id:'q3', num:3, type:'scale', text:'他のメンバーの投稿や工夫を見て、自分の活動の参考になったと感じますか？' },
+    { id:'q4', num:4, type:'scale', text:'今月の課題は、今後の活動に活かせそうだと感じますか？' },
+    { id:'q5', num:5, type:'scale', text:'Zoom会議の頻度・時間は適切だったと感じますか？' },
+    { id:'q6', num:6, type:'scale', text:'グループ内で気軽に発言・相談できましたか？' },
+    { id:'q7', num:7, type:'scale', text:'グループ2での学びが、実際の売上やフォロワー数などの成果につながったと感じますか？' },
+    { id:'q9', num:8, type:'scale', text:'グループ2の活動の中で、大変だった・負担に感じたことはありますか？',
+      sub:{ id:'q9_detail', label:'よろしければ、内容を教えてください（任意）', triggerOn:['そう思う','ややそう思う'] } },
+    { id:'q10', num:9, type:'scale', text:'2ヶ月間で、他のメンバーの変化や成長を感じた瞬間はありましたか？' },
+    { id:'q11', num:10, type:'text', tag:'（任意）', text:'グループ2があったことで、自分自身が変わったと感じることがあれば教えてください' },
+    { id:'q12', num:11, type:'text', tag:'（任意）', text:'全体の感想、来月で最後ですが、意気込みや「やってほしいこと」があれば自由にどうぞ' }
+  ];
+
+
+  const answers = {};
+  const container = document.getElementById('questionsContainer');
+  const requiredIds = questions.filter(q=>q.type==='scale').map(q=>q.id);
+
+  function updateSubmitState(){
+    const answeredRequired = requiredIds.filter(id=>answers[id]).length;
+    document.getElementById('submitBtn').disabled = answeredRequired < requiredIds.length;
+  }
+
+  questions.forEach(q=>{
+    const block = document.createElement('div');
+    block.className = 'qblock';
+
+    const qtext = document.createElement('p');
+    qtext.className = 'qtext';
+    let prefix = q.num + '. ';
+    if(q.tag) prefix += '';
+    qtext.textContent = prefix + (q.tag ? q.tag+' ' : '') + q.text;
+    block.appendChild(qtext);
+
+    if(q.type === 'scale'){
+      const optList = document.createElement('div');
+      optList.className = 'opt-list';
+      scaleOptions.forEach(opt=>{
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'opt';
+        btn.textContent = opt;
+        btn.addEventListener('click', ()=>{
+          answers[q.id] = opt;
+          optList.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+          btn.classList.add('selected');
+          if(q.sub){
+            const subEl = document.getElementById(q.sub.id+'_wrap');
+            if(q.sub.triggerOn.includes(opt)){
+              subEl.classList.add('show');
+            } else {
+              subEl.classList.remove('show');
+              answers[q.sub.id] = '';
+              const ta = subEl.querySelector('textarea');
+              if(ta) ta.value = '';
+            }
+          }
+          updateSubmitState();
+        });
+        optList.appendChild(btn);
+      });
+      block.appendChild(optList);
+
+      if(q.sub){
+        const subWrap = document.createElement('div');
+        subWrap.className = 'sub-field';
+        subWrap.id = q.sub.id+'_wrap';
+        const label = document.createElement('label');
+        label.textContent = q.sub.label;
+        subWrap.appendChild(label);
+        const ta = document.createElement('textarea');
+        ta.placeholder = '自由に入力してください';
+        ta.addEventListener('input', ()=>{ answers[q.sub.id] = ta.value; });
+        subWrap.appendChild(ta);
+        block.appendChild(subWrap);
+      }
+    } else if(q.type === 'text'){
+      const ta = document.createElement('textarea');
+      ta.placeholder = '自由に入力してください';
+      ta.addEventListener('input', ()=>{ answers[q.id] = ta.value; });
+      block.appendChild(ta);
+    }
+
+    container.appendChild(block);
+  });
+
+  updateSubmitState();
+
+  document.getElementById('submitBtn').addEventListener('click', async ()=>{
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中…';
+
+    const payload = {};
+    questions.forEach(q=>{
+      payload[q.id] = answers[q.id] || '';
+      if(q.sub){ payload[q.sub.id] = answers[q.sub.id] || ''; }
+    });
+    payload.submittedAt = new Date().toISOString();
+
+    const key = RESULT_KEY_PREFIX + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+
+    if(!BUCKET_ID){
+      submitBtn.disabled = false;
+      submitBtn.textContent = '📩 回答を送信する';
+      document.getElementById('submitHint').textContent = 'まだ保存先の設定が完了していません。管理者に連絡してください。';
+      return;
+    }
+
+    try{
+      await storageApi.set(key, JSON.stringify(payload));
+    }catch(e){
+      console.error('送信エラー', e);
+      submitBtn.disabled = false;
+      submitBtn.textContent = '📩 回答を送信する';
+      document.getElementById('submitHint').textContent = '送信に失敗しました。通信環境を確認してもう一度お試しください。';
+      return;
+    }
+
+    document.getElementById('formArea').classList.add('hide');
+    document.getElementById('doneWrap').classList.add('show');
+  });
+
+  // ---------- admin ----------
+  const pwOverlay = document.getElementById('pwOverlay');
+  const pwInput = document.getElementById('pwInput');
+  const pwError = document.getElementById('pwError');
+
+  document.getElementById('openAdminBtn').addEventListener('click', ()=>{
+    if(!BUCKET_ID){
+      document.getElementById('formArea').classList.add('hide');
+      document.getElementById('setupWrap').style.display = 'block';
+      return;
+    }
+    pwInput.value = '';
+    pwError.classList.remove('show');
+    pwOverlay.classList.add('show');
+    setTimeout(()=>pwInput.focus(), 100);
+  });
+
+  document.getElementById('createBucketBtn').addEventListener('click', async (e)=>{
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    btn.textContent = '作成中…';
+    try{
+      const newId = await createBucket();
+      document.getElementById('bucketIdDisplay').textContent = newId;
+      document.getElementById('setupResult').style.display = 'block';
+      btn.textContent = '作成しました';
+    }catch(err){
+      btn.disabled = false;
+      btn.textContent = '保管庫を新しく作る';
+      alert('作成に失敗しました。通信環境を確認してもう一度お試しください。');
+    }
+  });
+  document.getElementById('pwCancel').addEventListener('click', ()=>{
+    pwOverlay.classList.remove('show');
+  });
+  document.getElementById('pwConfirm').addEventListener('click', tryOpenAdmin);
+  pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryOpenAdmin(); });
+
+  async function tryOpenAdmin(){
+    if(pwInput.value !== ADMIN_PASSWORD){
+      pwError.classList.add('show');
+      return;
+    }
+    pwOverlay.classList.remove('show');
+    document.getElementById('formArea').classList.add('hide');
+    document.getElementById('adminWrap').classList.add('show');
+    await loadAdminResults();
+  }
+  document.getElementById('closeAdminBtn').addEventListener('click', ()=>{
+    document.getElementById('adminWrap').classList.remove('show');
+    document.getElementById('formArea').classList.remove('hide');
+  });
+
+  async function loadAdminResults(){
+    const resultsEl = document.getElementById('adminResults');
+    const countEl = document.getElementById('adminCount');
+    resultsEl.innerHTML = '';
+    countEl.textContent = '読み込み中…';
+
+    if(!BUCKET_ID){
+      countEl.textContent = '保存先が未設定です（初期セットアップが必要です）';
+      return;
+    }
+
+    let keys = [];
+    try{
+      const listRes = await storageApi.list(RESULT_KEY_PREFIX);
+      keys = (listRes && listRes.keys) ? listRes.keys : [];
+    }catch(e){
+      countEl.textContent = '結果の取得に失敗しました。通信環境を確認してください。';
+      return;
+    }
+
+    if(keys.length === 0){
+      countEl.textContent = 'まだ回答がありません';
+      return;
+    }
+
+    const responses = [];
+    for(const k of keys){
+      try{
+        const r = await storageApi.get(k);
+        if(r && r.value){
+          responses.push(JSON.parse(r.value));
+        }
+      }catch(e){ /* skip broken entries */ }
+    }
+
+    countEl.textContent = responses.length + '件の回答';
+
+    questions.forEach(q=>{
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      const qEl = document.createElement('p');
+      qEl.className = 'result-q';
+      qEl.textContent = q.num + '. ' + q.text;
+      card.appendChild(qEl);
+
+      if(q.type === 'scale'){
+        const counts = {};
+        scaleOptions.forEach(o=>counts[o]=0);
+        responses.forEach(r=>{
+          if(r[q.id] && counts.hasOwnProperty(r[q.id])) counts[r[q.id]]++;
+        });
+        const total = responses.length || 1;
+        scaleOptions.forEach(opt=>{
+          const row = document.createElement('div');
+          row.className = 'bar-row';
+          const label = document.createElement('div');
+          label.className = 'bar-label';
+          label.innerHTML = '<span>'+opt+'</span><span>'+counts[opt]+'件</span>';
+          row.appendChild(label);
+          const bg = document.createElement('div');
+          bg.className = 'bar-bg';
+          const fill = document.createElement('div');
+          fill.className = 'bar-fill';
+          fill.style.width = Math.round((counts[opt]/total)*100)+'%';
+          bg.appendChild(fill);
+          row.appendChild(bg);
+          card.appendChild(row);
+        });
+
+        if(q.sub){
+          const details = responses.map(r=>r[q.sub.id]).filter(v=>v && v.trim());
+          const subTitle = document.createElement('p');
+          subTitle.className = 'result-q';
+          subTitle.style.marginTop = '16px';
+          subTitle.style.fontSize = '12.5px';
+          subTitle.style.color = 'var(--ink-soft)';
+          subTitle.textContent = '自由記述（'+q.sub.label.replace('（任意）','')+'）';
+          card.appendChild(subTitle);
+          const list = document.createElement('div');
+          list.className = 'free-list';
+          if(details.length === 0){
+            const empty = document.createElement('div');
+            empty.className = 'free-empty';
+            empty.textContent = '記入なし';
+            list.appendChild(empty);
+          } else {
+            details.forEach(d=>{
+              const item = document.createElement('div');
+              item.className = 'free-item';
+              item.textContent = d;
+              list.appendChild(item);
+            });
+          }
+          card.appendChild(list);
+        }
+      } else if(q.type === 'text'){
+        const texts = responses.map(r=>r[q.id]).filter(v=>v && v.trim());
+        const list = document.createElement('div');
+        list.className = 'free-list';
+        if(texts.length === 0){
+          const empty = document.createElement('div');
+          empty.className = 'free-empty';
+          empty.textContent = '記入なし';
+          list.appendChild(empty);
+        } else {
+          texts.forEach(t=>{
+            const item = document.createElement('div');
+            item.className = 'free-item';
+            item.textContent = t;
+            list.appendChild(item);
+          });
+        }
+        card.appendChild(list);
+      }
+
+      resultsEl.appendChild(card);
+    });
+  }
+})();
+</script>
+</body>
+</html>
