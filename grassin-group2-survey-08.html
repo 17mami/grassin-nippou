@@ -222,24 +222,7 @@
       <div class="hint-bottom" id="submitHint">選択式の質問（Q1〜Q9）にすべて回答すると送信できます</div>
     </div>
 
-    <div class="admin-link-wrap">
-      <button class="admin-link" id="openAdminBtn">🔒 結果を見る（管理者用）</button>
-    </div>
-  </div>
-
-  <div class="setup-wrap" id="setupWrap" style="display:none;">
-    <div class="card">
-      <p class="anon-note" style="margin-bottom:16px;">初期セットアップ（最初の1回だけ）</p>
-      <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.9; margin:0 0 16px;">
-        まだ回答を保存する場所が作られていません。下のボタンを押すと、回答を保管する場所（保管庫）が新しく作られます。<br><br>
-        作成後に表示される「保管庫ID」を、Claudeとのチャットに貼り付けて教えてください。次のバージョンにそのIDを組み込んで、全員が同じ保管庫を使えるようにします。
-      </p>
-      <button class="btn btn-primary" id="createBucketBtn">保管庫を新しく作る</button>
-      <div id="setupResult" style="display:none; margin-top:16px;">
-        <p style="font-size:12px; color:var(--ink-soft); margin:0 0 6px;">保管庫ID（これをコピーしてClaudeに送ってください）</p>
-        <div style="background:var(--opt-bg); border-radius:12px; padding:12px 14px; font-size:13px; word-break:break-all; user-select:all;" id="bucketIdDisplay"></div>
-      </div>
-    </div>
+    <div class="hint-bottom" style="margin-top:14px;">送信すると、まみさんへ直接メールで届きます</div>
   </div>
 
   <div class="done-wrap" id="doneWrap">
@@ -248,83 +231,16 @@
     <p>あたたかいご協力に感謝します。<br>いただいた声は、来月の活動に大切に活かしていきます。</p>
   </div>
 
-  <div class="admin-wrap" id="adminWrap">
-    <div class="admin-header">
-      <h1>結果一覧</h1>
-      <button class="admin-back" id="closeAdminBtn">アンケートに戻る</button>
-    </div>
-    <div class="admin-count" id="adminCount">読み込み中…</div>
-    <div id="adminResults"></div>
-  </div>
-
-</div>
-
-<div class="overlay" id="pwOverlay">
-  <div class="pw-modal">
-    <h3>管理者用パスワード</h3>
-    <input type="password" id="pwInput" placeholder="パスワードを入力">
-    <div class="pw-error" id="pwError">パスワードが違います</div>
-    <div class="pw-actions">
-      <button class="btn btn-secondary" id="pwCancel" style="flex:1;">キャンセル</button>
-      <button class="btn btn-primary" id="pwConfirm" style="flex:1;">開く</button>
-    </div>
-  </div>
 </div>
 
 <script>
 (function(){
-  const RESULT_KEY_PREFIX = 'response-';
-  const ADMIN_PASSWORD = 'grassin08'; // まみさんが自由に変更してください
-
-  // ▼▼▼ 初期セットアップ後、ここにkvdb.ioの「保管庫ID」を入れてください ▼▼▼
-  const BUCKET_ID = '2ijWaVtmLKDpKHDB4chcgm';
-  // ▲▲▲ ここまで ▲▲▲
-
-  const KVDB_BASE = 'https://kvdb.io';
-
-  const kvdbStore = {
-    async set(key, value){
-      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/' + encodeURIComponent(key), {
-        method: 'POST',
-        body: value
-      });
-      if(!res.ok) throw new Error('kvdb set failed: ' + res.status);
-      return { key, value };
-    },
-    async get(key){
-      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/' + encodeURIComponent(key));
-      if(!res.ok) throw new Error('kvdb get failed: ' + res.status);
-      const value = await res.text();
-      return { key, value };
-    },
-    async list(prefix){
-      const res = await fetch(KVDB_BASE + '/' + BUCKET_ID + '/?prefix=' + encodeURIComponent(prefix) + '&format=json');
-      if(!res.ok) throw new Error('kvdb list failed: ' + res.status);
-      const text = await res.text();
-      let keys = [];
-      try{
-        const parsed = JSON.parse(text);
-        keys = Array.isArray(parsed) ? parsed : [];
-      }catch(e){
-        keys = text.split('\n').map(s=>s.trim()).filter(Boolean);
-      }
-      return { keys };
-    }
-  };
-
-  async function createBucket(){
-    const res = await fetch(KVDB_BASE + '/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ email: 'foxy8127mami@gmail.com' }).toString()
-    });
-    if(!res.ok) throw new Error('bucket create failed: ' + res.status);
-    return (await res.text()).trim();
-  }
-
-  const storageApi = kvdbStore;
+  // 回答は FormSubmit というサービスを使い、送信するとまみさんのメールに直接届きます
+  const NOTIFY_EMAIL = 'foxy8127mami@gmail.com';
+  const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/' + NOTIFY_EMAIL;
 
   const scaleOptions = ['そう思う','ややそう思う','あまりそう思わない','そう思わない'];
+
 
   const questions = [
     { id:'q1', num:1, type:'scale', text:'グループ2の雰囲気は良かったと感じますか？' },
@@ -421,24 +337,27 @@
     submitBtn.disabled = true;
     submitBtn.textContent = '送信中…';
 
-    const payload = {};
+    const fd = new FormData();
+    fd.append('_subject', 'グループ2 8月アンケート回答');
+    fd.append('_template', 'table');
+    fd.append('_captcha', 'false');
+
     questions.forEach(q=>{
-      payload[q.id] = answers[q.id] || '';
-      if(q.sub){ payload[q.sub.id] = answers[q.sub.id] || ''; }
+      const label = q.num + '. ' + q.text;
+      fd.append(label, answers[q.id] || '（未回答）');
+      if(q.sub){
+        fd.append(label + '（自由記述）', answers[q.sub.id] || '');
+      }
     });
-    payload.submittedAt = new Date().toISOString();
-
-    const key = RESULT_KEY_PREFIX + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-
-    if(!BUCKET_ID){
-      submitBtn.disabled = false;
-      submitBtn.textContent = '📩 回答を送信する';
-      document.getElementById('submitHint').textContent = 'まだ保存先の設定が完了していません。管理者に連絡してください。';
-      return;
-    }
+    fd.append('送信日時', new Date().toLocaleString('ja-JP'));
 
     try{
-      await storageApi.set(key, JSON.stringify(payload));
+      const res = await fetch(FORMSUBMIT_URL, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: fd
+      });
+      if(!res.ok) throw new Error('送信失敗: ' + res.status);
     }catch(e){
       console.error('送信エラー', e);
       submitBtn.disabled = false;
@@ -451,177 +370,6 @@
     document.getElementById('doneWrap').classList.add('show');
   });
 
-  // ---------- admin ----------
-  const pwOverlay = document.getElementById('pwOverlay');
-  const pwInput = document.getElementById('pwInput');
-  const pwError = document.getElementById('pwError');
-
-  document.getElementById('openAdminBtn').addEventListener('click', ()=>{
-    if(!BUCKET_ID){
-      document.getElementById('formArea').classList.add('hide');
-      document.getElementById('setupWrap').style.display = 'block';
-      return;
-    }
-    pwInput.value = '';
-    pwError.classList.remove('show');
-    pwOverlay.classList.add('show');
-    setTimeout(()=>pwInput.focus(), 100);
-  });
-
-  document.getElementById('createBucketBtn').addEventListener('click', async (e)=>{
-    const btn = e.currentTarget;
-    btn.disabled = true;
-    btn.textContent = '作成中…';
-    try{
-      const newId = await createBucket();
-      document.getElementById('bucketIdDisplay').textContent = newId;
-      document.getElementById('setupResult').style.display = 'block';
-      btn.textContent = '作成しました';
-    }catch(err){
-      btn.disabled = false;
-      btn.textContent = '保管庫を新しく作る';
-      alert('作成に失敗しました。通信環境を確認してもう一度お試しください。');
-    }
-  });
-  document.getElementById('pwCancel').addEventListener('click', ()=>{
-    pwOverlay.classList.remove('show');
-  });
-  document.getElementById('pwConfirm').addEventListener('click', tryOpenAdmin);
-  pwInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryOpenAdmin(); });
-
-  async function tryOpenAdmin(){
-    if(pwInput.value !== ADMIN_PASSWORD){
-      pwError.classList.add('show');
-      return;
-    }
-    pwOverlay.classList.remove('show');
-    document.getElementById('formArea').classList.add('hide');
-    document.getElementById('adminWrap').classList.add('show');
-    await loadAdminResults();
-  }
-  document.getElementById('closeAdminBtn').addEventListener('click', ()=>{
-    document.getElementById('adminWrap').classList.remove('show');
-    document.getElementById('formArea').classList.remove('hide');
-  });
-
-  async function loadAdminResults(){
-    const resultsEl = document.getElementById('adminResults');
-    const countEl = document.getElementById('adminCount');
-    resultsEl.innerHTML = '';
-    countEl.textContent = '読み込み中…';
-
-    if(!BUCKET_ID){
-      countEl.textContent = '保存先が未設定です（初期セットアップが必要です）';
-      return;
-    }
-
-    let keys = [];
-    try{
-      const listRes = await storageApi.list(RESULT_KEY_PREFIX);
-      keys = (listRes && listRes.keys) ? listRes.keys : [];
-    }catch(e){
-      countEl.textContent = '結果の取得に失敗しました。通信環境を確認してください。';
-      return;
-    }
-
-    if(keys.length === 0){
-      countEl.textContent = 'まだ回答がありません';
-      return;
-    }
-
-    const responses = [];
-    for(const k of keys){
-      try{
-        const r = await storageApi.get(k);
-        if(r && r.value){
-          responses.push(JSON.parse(r.value));
-        }
-      }catch(e){ /* skip broken entries */ }
-    }
-
-    countEl.textContent = responses.length + '件の回答';
-
-    questions.forEach(q=>{
-      const card = document.createElement('div');
-      card.className = 'result-card';
-      const qEl = document.createElement('p');
-      qEl.className = 'result-q';
-      qEl.textContent = q.num + '. ' + q.text;
-      card.appendChild(qEl);
-
-      if(q.type === 'scale'){
-        const counts = {};
-        scaleOptions.forEach(o=>counts[o]=0);
-        responses.forEach(r=>{
-          if(r[q.id] && counts.hasOwnProperty(r[q.id])) counts[r[q.id]]++;
-        });
-        const total = responses.length || 1;
-        scaleOptions.forEach(opt=>{
-          const row = document.createElement('div');
-          row.className = 'bar-row';
-          const label = document.createElement('div');
-          label.className = 'bar-label';
-          label.innerHTML = '<span>'+opt+'</span><span>'+counts[opt]+'件</span>';
-          row.appendChild(label);
-          const bg = document.createElement('div');
-          bg.className = 'bar-bg';
-          const fill = document.createElement('div');
-          fill.className = 'bar-fill';
-          fill.style.width = Math.round((counts[opt]/total)*100)+'%';
-          bg.appendChild(fill);
-          row.appendChild(bg);
-          card.appendChild(row);
-        });
-
-        if(q.sub){
-          const details = responses.map(r=>r[q.sub.id]).filter(v=>v && v.trim());
-          const subTitle = document.createElement('p');
-          subTitle.className = 'result-q';
-          subTitle.style.marginTop = '16px';
-          subTitle.style.fontSize = '12.5px';
-          subTitle.style.color = 'var(--ink-soft)';
-          subTitle.textContent = '自由記述（'+q.sub.label.replace('（任意）','')+'）';
-          card.appendChild(subTitle);
-          const list = document.createElement('div');
-          list.className = 'free-list';
-          if(details.length === 0){
-            const empty = document.createElement('div');
-            empty.className = 'free-empty';
-            empty.textContent = '記入なし';
-            list.appendChild(empty);
-          } else {
-            details.forEach(d=>{
-              const item = document.createElement('div');
-              item.className = 'free-item';
-              item.textContent = d;
-              list.appendChild(item);
-            });
-          }
-          card.appendChild(list);
-        }
-      } else if(q.type === 'text'){
-        const texts = responses.map(r=>r[q.id]).filter(v=>v && v.trim());
-        const list = document.createElement('div');
-        list.className = 'free-list';
-        if(texts.length === 0){
-          const empty = document.createElement('div');
-          empty.className = 'free-empty';
-          empty.textContent = '記入なし';
-          list.appendChild(empty);
-        } else {
-          texts.forEach(t=>{
-            const item = document.createElement('div');
-            item.className = 'free-item';
-            item.textContent = t;
-            list.appendChild(item);
-          });
-        }
-        card.appendChild(list);
-      }
-
-      resultsEl.appendChild(card);
-    });
-  }
 })();
 </script>
 </body>
