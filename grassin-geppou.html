@@ -183,10 +183,9 @@
   </div>
 
   <div class="datebar">
-    <button class="navbtn" id="prevMonth">‹</button>
     <select id="monthSelect"></select>
-    <button class="navbtn" id="nextMonth">›</button>
   </div>
+  <button id="addMonthBtn" style="width:100%;text-align:center;margin:-6px 0 16px;background:none;border:none;color:var(--ink-soft);font-size:12px;text-decoration:underline;text-underline-offset:3px;padding:6px;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;">＋ 新しい月を追加</button>
 
   <!-- input -->
   <div class="card">
@@ -771,21 +770,19 @@
     fillForm(curKey);
     renderCompare();
   });
-  document.getElementById('prevMonth').addEventListener('click', ()=>{
-    const [y,m] = curKey.split('-').map(Number);
-    const d = new Date(y, m-2, 1);
-    curKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+
+  document.getElementById('addMonthBtn').addEventListener('click', ()=>{
+    const input = prompt('追加する月を「年-月」の形式で入力してください（例：2026-09）', currentMonthKey());
+    if(!input) return;
+    const m = input.trim().match(/^(\d{4})-(\d{1,2})$/);
+    if(!m){ alert('入力形式が正しくありません。例：2026-09'); return; }
+    const key = m[1]+'-'+String(parseInt(m[2])).padStart(2,'0');
+    if(!data[key]){ data[key] = {}; }
+    curKey = key;
     buildMonthOptions();
     fillForm(curKey);
     renderCompare();
-  });
-  document.getElementById('nextMonth').addEventListener('click', ()=>{
-    const [y,m] = curKey.split('-').map(Number);
-    const d = new Date(y, m, 1);
-    curKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-    buildMonthOptions();
-    fillForm(curKey);
-    renderCompare();
+    window.scrollTo({top:0, behavior:'smooth'});
   });
 
   // ---- copy ----
