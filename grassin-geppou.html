@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="grassin月報">
+<title>grassin 月報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #FAF6EE;
+    --cream-deep: #F1EADB;
+    --ink: #34302A;
+    --ink-soft: #6B6459;
+    --clay: #AD6748;
+    --clay-soft: #E7CFC1;
+    --sage: #8C9574;
+    --sage-soft: #DDE2CE;
+    --sky: #B9C7CE;
+    --line: #E4DBCB;
+    --white: #FFFFFF;
+    --good: #6E8B5A;
+    --bad: #B15C4A;
+    --radius: 18px;
+    --shadow: 0 2px 14px rgba(90, 70, 50, 0.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 400px at 50% -80px, rgba(185,199,206,0.35), transparent 60%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    min-height:100vh;
+    padding-bottom:64px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px;}
+
+  .hero{padding:36px 0 22px;text-align:center;}
+  .hero .fox{font-size:32px;display:block;margin-bottom:6px;}
+  .hero h1{
+    font-family:'Shippori Mincho', serif;font-weight:600;font-size:21px;margin:0 0 8px;color:var(--ink);
+  }
+  .hero .sub{font-size:12px;color:var(--ink-soft);margin:0;line-height:1.8;}
+
+  .datebar{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--white);border-radius:14px;padding:12px 16px;
+    box-shadow:var(--shadow);margin-bottom:16px;
+  }
+  .datebar .navbtn{background:none;border:none;font-size:18px;color:var(--clay);padding:6px 10px;cursor:pointer;border-radius:8px;}
+  .datebar .navbtn:active{background:var(--cream-deep);}
+  .datebar select{
+    font-family:'Shippori Mincho', serif;font-size:15.5px;text-align:center;flex:1;
+    border:none;background:none;color:var(--ink);text-align-last:center;
+  }
+  .new-pill{display:inline-block;font-size:10px;background:var(--sage-soft);color:#57603F;padding:2px 8px;border-radius:20px;margin-left:6px;}
+
+  .card{
+    background:var(--white);border-radius:var(--radius);padding:20px 20px 22px;
+    margin-bottom:16px;box-shadow:var(--shadow);border:1px solid rgba(180,150,120,0.08);
+  }
+  .card h2{
+    font-family:'Shippori Mincho', serif;font-size:15px;font-weight:600;margin:0 0 14px;
+    display:flex;align-items:center;gap:7px;color:var(--ink);
+  }
+  .card h2 .mark{color:var(--clay);font-size:14px;}
+
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .field-grid.wide{grid-template-columns:1fr;}
+  .field{margin-bottom:2px;}
+  .field label{font-size:11.5px;color:var(--ink-soft);display:block;margin-bottom:5px;}
+  .field input{
+    width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;
+    background:var(--cream);font-size:14px;color:var(--ink);font-family:'Zen Kaku Gothic New',sans-serif;
+  }
+  .field input:focus{outline:none;border-color:var(--clay-soft);}
+  .section-label{
+    font-size:11px;color:var(--clay);letter-spacing:.04em;margin:16px 0 10px;font-weight:600;
+  }
+  .section-label:first-child{margin-top:0;}
+  .auto-total{
+    background:var(--cream-deep);border-radius:10px;padding:10px 14px;font-size:13px;
+    color:var(--ink-soft);margin-top:10px;display:flex;justify-content:space-between;
+  }
+  .auto-total b{color:var(--clay);font-size:15px;}
+
+  /* comparison */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .compare-item{
+    background:var(--cream);border-radius:12px;padding:12px 14px;
+  }
+  .compare-item .clabel{font-size:11px;color:var(--ink-soft);margin-bottom:4px;}
+  .compare-item .cval{font-size:16px;font-weight:600;color:var(--ink);}
+  .compare-item .cdelta{font-size:11.5px;margin-top:3px;display:flex;align-items:center;gap:3px;}
+  .cdelta.up{color:var(--good);}
+  .cdelta.down{color:var(--bad);}
+  .cdelta.flat{color:var(--ink-soft);}
+  .no-prev{font-size:11px;color:var(--ink-soft);text-align:center;padding:10px;}
+
+  /* charts */
+  .chart-wrap{position:relative;height:220px;margin-bottom:4px;}
+  .chart-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .chart-tab{
+    font-size:12px;padding:7px 13px;border-radius:20px;border:1px solid var(--line);
+    background:var(--cream);color:var(--ink-soft);cursor:pointer;
+  }
+  .chart-tab.active{background:var(--ink);color:var(--cream);border-color:var(--ink);}
+  .chart-legend{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+  .chart-legend .leg-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);}
+  .chart-legend .leg-swatch{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+
+  /* buttons */
+  .actions{display:flex;gap:10px;margin-top:4px;}
+  .btn{
+    flex:1;padding:14px;border-radius:14px;border:none;font-size:14.5px;
+    font-family:'Shippori Mincho', serif;font-weight:600;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s ease;
+  }
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--ink);color:var(--cream);}
+  .btn-secondary{background:var(--white);color:var(--clay);border:1px solid var(--clay-soft);}
+
+  /* history */
+  .history-list{display:flex;flex-direction:column;gap:8px;}
+  .history-item{
+    display:flex;align-items:center;justify-content:space-between;padding:11px 14px;
+    background:var(--cream);border-radius:12px;cursor:pointer;border:1px solid transparent;
+  }
+  .history-item:active{border-color:var(--clay-soft);}
+  .history-item .hd{font-size:13px;color:var(--ink);}
+  .history-item .hd small{display:block;font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  .history-item .harrow{color:var(--clay-soft);font-size:14px;}
+
+  .divider{display:flex;align-items:center;gap:10px;margin:22px 0;color:var(--ink-soft);}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+  .divider span{font-size:11px;letter-spacing:.3em;}
+
+  /* toast */
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--cream);padding:12px 20px;border-radius:30px;
+    font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,0.2);opacity:0;pointer-events:none;
+    transition:all .35s ease;z-index:100;white-space:nowrap;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* modal */
+  .overlay{
+    position:fixed;inset:0;background:rgba(52,48,42,0.45);display:none;
+    align-items:flex-end;justify-content:center;z-index:200;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--cream);width:100%;max-width:560px;border-radius:20px 20px 0 0;
+    padding:24px 20px 30px;max-height:82vh;overflow-y:auto;
+  }
+  .modal h3{font-family:'Shippori Mincho', serif;font-size:16px;margin:0 0 16px;}
+  .copytext{
+    white-space:pre-wrap;font-size:13px;line-height:1.8;background:var(--white);
+    border-radius:12px;padding:16px;border:1px solid var(--line);margin-bottom:14px;
+    max-height:50vh;overflow-y:auto;
+  }
+  .close-modal{
+    display:block;margin:0 auto;background:none;border:none;color:var(--ink-soft);
+    font-size:12.5px;text-decoration:underline;padding:10px;text-underline-offset:3px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="fox">🦊</span>
+    <h1>grassin 月報</h1>
+    <p class="sub">月ごとの数字を記録して、変化を見える化する</p>
+  </div>
+
+  <div class="datebar">
+    <button class="navbtn" id="prevMonth">‹</button>
+    <select id="monthSelect"></select>
+    <button class="navbtn" id="nextMonth">›</button>
+  </div>
+
+  <!-- input -->
+  <div class="card">
+    <h2><span class="mark">✎</span>今月の数字を入力</h2>
+
+    <p class="section-label">売上</p>
+    <div class="field-grid">
+      <div class="field"><label>店舗売上（円）</label><input type="number" id="fShop" inputmode="numeric"></div>
+      <div class="field"><label>BASE売上（円）</label><input type="number" id="fBase" inputmode="numeric"></div>
+    </div>
+    <div class="auto-total"><span>合計売上</span><b id="autoTotal">¥0</b></div>
+
+    <p class="section-label">販売実績</p>
+    <div class="field-grid">
+      <div class="field"><label>本数</label><input type="number" id="fCount" inputmode="numeric"></div>
+      <div class="field"><label>BASE注文数</label><input type="number" id="fOrders" inputmode="numeric"></div>
+      <div class="field"><label>客単価（円）</label><input type="number" id="fUnit" inputmode="numeric"></div>
+      <div class="field"><label>流入数</label><input type="number" id="fInflow" inputmode="numeric"></div>
+      <div class="field"><label>購入率CVR（%）</label><input type="number" step="0.01" id="fCvr" inputmode="decimal"></div>
+      <div class="field"><label>リピート率（%）</label><input type="number" step="0.01" id="fRepeat" inputmode="decimal"></div>
+    </div>
+
+    <p class="section-label">Instagram</p>
+    <div class="field-grid">
+      <div class="field"><label>フォロワー数</label><input type="number" id="fFollowers" inputmode="numeric"></div>
+      <div class="field"><label>リール投稿数</label><input type="number" id="fReel" inputmode="numeric"></div>
+      <div class="field"><label>フィード投稿数</label><input type="number" id="fFeed" inputmode="numeric"></div>
+      <div class="field"><label>ストーリーズ投稿数</label><input type="number" id="fStory" inputmode="numeric"></div>
+    </div>
+
+    <p class="section-label">広告分析</p>
+    <div class="field-grid">
+      <div class="field"><label>広告費（円）</label><input type="number" id="fAdCost" inputmode="numeric"></div>
+      <div class="field"><label>閲覧数</label><input type="number" id="fAdViews" inputmode="numeric"></div>
+      <div class="field"><label>リーチ</label><input type="number" id="fAdReach" inputmode="numeric"></div>
+      <div class="field"><label>フォロー（広告経由）</label><input type="number" id="fAdFollow" inputmode="numeric"></div>
+      <div class="field"><label>フォロー単価（円）</label><input type="number" step="0.01" id="fAdFollowCost" inputmode="decimal"></div>
+      <div class="field"><label>保存数</label><input type="number" id="fAdSaves" inputmode="numeric"></div>
+      <div class="field"><label>プロフィールアクセス</label><input type="number" id="fAdProfAccess" inputmode="numeric"></div>
+      <div class="field"><label>アクセス単価（円）</label><input type="number" step="0.01" id="fAdAccessCost" inputmode="decimal"></div>
+      <div class="field"><label>ROAS（%）</label><input type="number" step="0.01" id="fAdRoas" inputmode="decimal"></div>
+      <div class="field"><label>CPA（円）</label><input type="number" step="0.01" id="fAdCpa" inputmode="decimal"></div>
+    </div>
+  </div>
+
+  <!-- comparison -->
+  <div class="card">
+    <h2><span class="mark">⇄</span>前月との比較</h2>
+    <div id="compareBody"></div>
+  </div>
+
+  <!-- charts -->
+  <div class="card">
+    <h2><span class="mark">◈</span>推移グラフ</h2>
+    <div class="chart-tabs">
+      <button class="chart-tab active" data-chart="sales">売上</button>
+      <button class="chart-tab" data-chart="count">本数・注文数</button>
+      <button class="chart-tab" data-chart="followers">フォロワー</button>
+      <button class="chart-tab" data-chart="repeat">CVR・リピート率</button>
+    </div>
+    <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+    <div class="chart-legend" id="chartLegend"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="saveBtn">保存する</button>
+    <button class="btn btn-primary" id="copyBtn">コピーする</button>
+  </div>
+
+  <div class="divider"><span>過去の月報</span></div>
+
+  <div class="card">
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="overlay" id="copyOverlay">
+  <div class="modal">
+    <h3>提出用テキスト</h3>
+    <div class="copytext" id="copyPreview"></div>
+    <button class="btn btn-primary" id="doCopy" style="width:100%;margin-bottom:10px;">クリップボードにコピー</button>
+    <button class="close-modal" id="closeCopy">閉じる</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORE_KEY = 'grassin_geppou_v2';
+
+  // ---- seed data from brand records ----
+  const seed = {
+    '2024-08': { shop:130260, base:0,      count:null, orders:null, unit:null, inflow:null, cvr:null,  repeat:null, followers:null, reel:null, feed:null, story:null,
+                 adCost:null, adViews:null, adReach:null, adFollow:null, adFollowCost:null, adAccessCost:null, adSaves:null, adProfAccess:null, adRoas:null, adCpa:null },
+    '2024-09': { shop:90580,  base:62698,  count:null, orders:null, unit:null, inflow:null, cvr:null,  repeat:null, followers:null, reel:null, feed:null, story:null,
+                 adCost:null, adViews:null, adReach:null, adFollow:null, adFollowCost:null, adAccessCost:null, adSaves:null, adProfAccess:null, adRoas:null, adCpa:null },
+    '2025-02': { shop:51200,  base:195218, count:131,  orders:46,   unit:4244, inflow:1426, cvr:3.22,  repeat:26,   followers:1720, reel:1, feed:3,  story:32,
+                 adCost:null, adViews:null, adReach:null, adFollow:null, adFollowCost:null, adAccessCost:null, adSaves:null, adProfAccess:null, adRoas:null, adCpa:null },
+    '2025-03': { shop:43545,  base:0,      count:36,   orders:null, unit:null, inflow:null, cvr:null,  repeat:null, followers:1851, reel:2, feed:13, story:43,
+                 adCost:null, adViews:null, adReach:null, adFollow:null, adFollowCost:null, adAccessCost:null, adSaves:null, adProfAccess:null, adRoas:null, adCpa:null },
+    // 4月：広告2本（「損したぁ」リーチ1298/プロフ113/フォロー25/広告費1430円 ＋「ジャム専門店」リーチ1430/プロフ117/フォロー35/広告費1417円）の合計値
+    '2025-04': { shop:87580,  base:204263, count:149,  orders:41,   unit:4982, inflow:959,  cvr:4.27,  repeat:null, followers:2201, reel:4, feed:18, story:82,
+                 adCost:2847, adViews:null, adReach:2728, adFollow:60, adFollowCost:47.45, adAccessCost:12.38, adSaves:null, adProfAccess:230, adRoas:null, adCpa:null },
+    // 5月：「また間に合わなかった」リール　リーチ1569/プロフ120/フォロー27/広告費1430円・3日間/アクセス単価12円/フォロー単価52円
+    '2025-05': { shop:95100,  base:233109, count:156,  orders:38,   unit:6134, inflow:361,  cvr:10.52, repeat:51,   followers:2229, reel:5, feed:17, story:64,
+                 adCost:1430, adViews:null, adReach:1569, adFollow:27, adFollowCost:52, adAccessCost:12, adSaves:null, adProfAccess:120, adRoas:null, adCpa:null },
+    // 6月：「普通のジャムでいいや」リール　リーチ1569/プロフ37/フォロー8/広告費473円・1日間/アクセス単価13円/フォロー単価59円
+    '2025-06': { shop:42620,  base:82296,  count:90,   orders:22,   unit:3741, inflow:310,  cvr:7.09,  repeat:59,   followers:2274, reel:2, feed:10, story:74,
+                 adCost:473,  adViews:null, adReach:1569, adFollow:8,  adFollowCost:59, adAccessCost:13, adSaves:null, adProfAccess:37,  adRoas:null, adCpa:null },
+    '2026-07': { shop:54050,  base:175471, count:115,  orders:31,   unit:5660, inflow:397,  cvr:7.8,   repeat:64,   followers:2275, reel:1, feed:9,  story:82,
+                 adCost:1466, adViews:null, adReach:1042, adFollow:23, adFollowCost:null, adAccessCost:null, adSaves:null, adProfAccess:74, adRoas:null, adCpa:null },
+    '2026-08': { shop:85310,  base:218526, count:120,  orders:37,   unit:5906, inflow:1823, cvr:6.5,   repeat:55,   followers:2337, reel:3, feed:11, story:25,
+                 adCost:1394, adViews:1578, adReach:1318, adFollow:49, adFollowCost:28, adAccessCost:null, adSaves:20, adProfAccess:139, adRoas:15676, adCpa:37 }
+  };
+
+  function loadData(){
+    let stored = {};
+    try{
+      const raw = localStorage.getItem(STORE_KEY);
+      if(raw) stored = JSON.parse(raw);
+    }catch(e){}
+    // seedにある月で、まだ保存データに無いものはまるごと補完する
+    // すでにある月でも、項目（フィールド）が欠けていればseedの値で補う（入力済みの値は上書きしない）
+    let changed = false;
+    Object.keys(seed).forEach(k=>{
+      if(!(k in stored)){
+        stored[k] = seed[k];
+        changed = true;
+      } else {
+        Object.keys(seed[k]).forEach(field=>{
+          if(!(field in stored[k])){
+            stored[k][field] = seed[k][field];
+            changed = true;
+          }
+        });
+      }
+    });
+    if(changed || !localStorage.getItem(STORE_KEY)){
+      localStorage.setItem(STORE_KEY, JSON.stringify(stored));
+    }
+    return stored;
+  }
+  function saveData(d){ localStorage.setItem(STORE_KEY, JSON.stringify(d)); }
+
+  let data = loadData();
+
+  function sortedKeys(){ return Object.keys(data).sort(); }
+
+  function currentMonthKey(){
+    const d = new Date();
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+  function monthLabel(key){
+    const [y,m] = key.split('-');
+    return y+'年'+parseInt(m)+'月';
+  }
+
+  let curKey = sortedKeys().length ? sortedKeys()[sortedKeys().length-1] : currentMonthKey();
+  if(!data[curKey]) curKey = currentMonthKey();
+
+  // ---- elements ----
+  const monthSelect = document.getElementById('monthSelect');
+  const fShop = document.getElementById('fShop');
+  const fBase = document.getElementById('fBase');
+  const fCount = document.getElementById('fCount');
+  const fOrders = document.getElementById('fOrders');
+  const fUnit = document.getElementById('fUnit');
+  const fInflow = document.getElementById('fInflow');
+  const fCvr = document.getElementById('fCvr');
+  const fRepeat = document.getElementById('fRepeat');
+  const fFollowers = document.getElementById('fFollowers');
+  const fReel = document.getElementById('fReel');
+  const fFeed = document.getElementById('fFeed');
+  const fStory = document.getElementById('fStory');
+  const fAdCost = document.getElementById('fAdCost');
+  const fAdViews = document.getElementById('fAdViews');
+  const fAdReach = document.getElementById('fAdReach');
+  const fAdFollow = document.getElementById('fAdFollow');
+  const fAdFollowCost = document.getElementById('fAdFollowCost');
+  const fAdSaves = document.getElementById('fAdSaves');
+  const fAdProfAccess = document.getElementById('fAdProfAccess');
+  const fAdAccessCost = document.getElementById('fAdAccessCost');
+  const fAdRoas = document.getElementById('fAdRoas');
+  const fAdCpa = document.getElementById('fAdCpa');
+  const autoTotal = document.getElementById('autoTotal');
+
+  function fmtYen(n){ return '¥'+(n||0).toLocaleString(); }
+
+  function buildMonthOptions(){
+    const keys = sortedKeys();
+    if(!keys.includes(curKey)){
+      keys.push(curKey);
+      keys.sort();
+    }
+    monthSelect.innerHTML = '';
+    keys.forEach(k=>{
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = monthLabel(k) + (data[k] ? '' : '（新規）');
+      if(k===curKey) opt.selected = true;
+      monthSelect.appendChild(opt);
+    });
+  }
+
+  function fillForm(key){
+    const rec = data[key] || {};
+    fShop.value = rec.shop ?? '';
+    fBase.value = rec.base ?? '';
+    fCount.value = rec.count ?? '';
+    fOrders.value = rec.orders ?? '';
+    fUnit.value = rec.unit ?? '';
+    fInflow.value = rec.inflow ?? '';
+    fCvr.value = rec.cvr ?? '';
+    fRepeat.value = rec.repeat ?? '';
+    fFollowers.value = rec.followers ?? '';
+    fReel.value = rec.reel ?? '';
+    fFeed.value = rec.feed ?? '';
+    fStory.value = rec.story ?? '';
+    fAdCost.value = rec.adCost ?? '';
+    fAdViews.value = rec.adViews ?? '';
+    fAdReach.value = rec.adReach ?? '';
+    fAdFollow.value = rec.adFollow ?? '';
+    fAdFollowCost.value = rec.adFollowCost ?? '';
+    fAdSaves.value = rec.adSaves ?? '';
+    fAdProfAccess.value = rec.adProfAccess ?? '';
+    fAdAccessCost.value = rec.adAccessCost ?? '';
+    fAdRoas.value = rec.adRoas ?? '';
+    fAdCpa.value = rec.adCpa ?? '';
+    updateAutoTotal();
+  }
+
+  function updateAutoTotal(){
+    const total = (parseInt(fShop.value)||0) + (parseInt(fBase.value)||0);
+    autoTotal.textContent = fmtYen(total);
+  }
+  [fShop, fBase].forEach(el=>el.addEventListener('input', updateAutoTotal));
+
+  function collectForm(){
+    const num = (el)=> el.value===''? null : parseFloat(el.value);
+    return {
+      shop: num(fShop), base: num(fBase),
+      count: num(fCount), orders: num(fOrders), unit: num(fUnit),
+      inflow: num(fInflow), cvr: num(fCvr), repeat: num(fRepeat),
+      followers: num(fFollowers), reel: num(fReel), feed: num(fFeed), story: num(fStory),
+      adCost: num(fAdCost), adViews: num(fAdViews), adReach: num(fAdReach),
+      adFollow: num(fAdFollow), adFollowCost: num(fAdFollowCost), adSaves: num(fAdSaves),
+      adProfAccess: num(fAdProfAccess), adAccessCost: num(fAdAccessCost), adRoas: num(fAdRoas), adCpa: num(fAdCpa)
+    };
+  }
+
+  // ---- comparison ----
+  function prevKeyOf(key){
+    const keys = sortedKeys().filter(k=>data[k]);
+    const idx = keys.indexOf(key);
+    if(idx > 0) return keys[idx-1];
+    // if current not saved yet, compare vs latest saved month
+    if(idx === -1 && keys.length) return keys[keys.length-1];
+    return null;
+  }
+
+  function deltaHtml(curVal, prevVal, opts){
+    opts = opts || {};
+    if(curVal==null || prevVal==null){
+      return '<div class="cdelta flat">比較データなし</div>';
+    }
+    const diff = curVal - prevVal;
+    if(Math.abs(diff) < 0.005){
+      return '<div class="cdelta flat">± 変化なし</div>';
+    }
+    const cls = diff > 0 ? 'up' : 'down';
+    const arrow = diff > 0 ? '↑' : '↓';
+    let text;
+    if(opts.percent){
+      text = arrow+' '+Math.abs(diff).toFixed(1)+'pt';
+    } else if(opts.yen){
+      text = arrow+' ¥'+Math.abs(Math.round(diff)).toLocaleString();
+    } else {
+      text = arrow+' '+Math.abs(Math.round(diff)).toLocaleString();
+    }
+    return '<div class="cdelta '+cls+'">'+text+'</div>';
+  }
+
+  function renderCompare(){
+    const rec = collectForm();
+    const prevKey = prevKeyOf(curKey);
+    const prev = prevKey ? data[prevKey] : null;
+    const box = document.getElementById('compareBody');
+
+    if(!prev){
+      box.innerHTML = '<div class="no-prev">比較できる前月のデータがまだありません</div>';
+      return;
+    }
+
+    const curTotal = (rec.shop||0)+(rec.base||0);
+    const prevTotal = (prev.shop||0)+(prev.base||0);
+
+    const items = [
+      { label:'合計売上（'+monthLabel(prevKey)+'比）', val: fmtYen(curTotal), delta: deltaHtml(curTotal, prevTotal, {yen:true}) },
+      { label:'本数', val: (rec.count ?? '—'), delta: deltaHtml(rec.count, prev.count) },
+      { label:'フォロワー数', val: (rec.followers ?? '—'), delta: deltaHtml(rec.followers, prev.followers) },
+      { label:'リピート率', val: (rec.repeat!=null ? rec.repeat+'%' : '—'), delta: deltaHtml(rec.repeat, prev.repeat, {percent:true}) }
+    ];
+
+    box.innerHTML = '<div class="compare-grid">' + items.map(it=>`
+      <div class="compare-item">
+        <div class="clabel">${it.label}</div>
+        <div class="cval">${it.val}</div>
+        ${it.delta}
+      </div>
+    `).join('') + '</div>';
+  }
+
+  // ---- history ----
+  function renderHistory(){
+    const list = document.getElementById('historyList');
+    const keys = sortedKeys().filter(k=>data[k]).reverse();
+    list.innerHTML = '';
+    if(keys.length===0){
+      list.innerHTML = '<div class="no-prev">まだ記録がありません</div>';
+      return;
+    }
+    keys.forEach(k=>{
+      const rec = data[k];
+      const total = (rec.shop||0)+(rec.base||0);
+      const item = document.createElement('div');
+      item.className = 'history-item';
+      item.innerHTML = `<div class="hd">${monthLabel(k)}<small>${fmtYen(total)}${rec.count!=null ? '　'+rec.count+'本' : ''}</small></div><div class="harrow">›</div>`;
+      item.addEventListener('click', ()=>{
+        curKey = k;
+        buildMonthOptions();
+        fillForm(k);
+        renderCompare();
+        renderChart();
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+      list.appendChild(item);
+    });
+  }
+
+  // ---- chart (native canvas, no external libraries) ----
+  let activeChart = 'sales';
+  const COLORS = { shop:'#AD6748', base:'#8C9574', count:'#AD6748', orders:'#8C9574',
+                    followers:'#AD6748', cvr:'#8C9574', repeat:'#AD6748' };
+
+  function chartConfigFor(type){
+    const keys = sortedKeys().filter(k=>data[k]);
+    const labels = keys.map(k=>monthLabel(k).replace('年','/').replace('月',''));
+
+    if(type==='sales'){
+      return { mode:'stackedBar', labels,
+        series:[
+          { name:'店舗', color:COLORS.shop, values:keys.map(k=>data[k].shop||0) },
+          { name:'BASE', color:COLORS.base, values:keys.map(k=>data[k].base||0) }
+        ], unit:'円' };
+    }
+    if(type==='count'){
+      return { mode:'line', labels,
+        series:[
+          { name:'本数', color:COLORS.count, values:keys.map(k=>data[k].count) },
+          { name:'BASE注文数', color:COLORS.orders, values:keys.map(k=>data[k].orders) }
+        ], unit:'件' };
+    }
+    if(type==='followers'){
+      return { mode:'line', labels, fill:true,
+        series:[
+          { name:'フォロワー数', color:COLORS.followers, values:keys.map(k=>data[k].followers) }
+        ], unit:'人' };
+    }
+    if(type==='repeat'){
+      return { mode:'line', labels,
+        series:[
+          { name:'CVR', color:COLORS.cvr, values:keys.map(k=>data[k].cvr) },
+          { name:'リピート率', color:COLORS.repeat, values:keys.map(k=>data[k].repeat) }
+        ], unit:'%' };
+    }
+  }
+
+  function renderLegend(cfg){
+    const leg = document.getElementById('chartLegend');
+    leg.innerHTML = cfg.series.map(s=>
+      `<div class="leg-item"><span class="leg-swatch" style="background:${s.color}"></span>${s.name}</div>`
+    ).join('');
+  }
+
+  function setupCanvas(canvas){
+    const wrap = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = wrap.clientWidth;
+    const cssH = wrap.clientHeight;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    canvas.style.width = cssW+'px';
+    canvas.style.height = cssH+'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    return { ctx, w:cssW, h:cssH };
+  }
+
+  function niceMax(val){
+    if(val<=0) return 10;
+    const mag = Math.pow(10, Math.floor(Math.log10(val)));
+    const norm = val/mag;
+    let step;
+    if(norm<=1) step=1; else if(norm<=2) step=2; else if(norm<=5) step=5; else step=10;
+    return step*mag;
+  }
+
+  function drawChart(){
+    const canvas = document.getElementById('mainChart');
+    const cfg = chartConfigFor(activeChart);
+    renderLegend(cfg);
+    const { ctx, w, h } = setupCanvas(canvas);
+    ctx.clearRect(0,0,w,h);
+
+    const padL = 44, padR = 10, padT = 14, padB = 28;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+    const n = cfg.labels.length;
+    if(n===0){
+      ctx.fillStyle = '#6B6459';
+      ctx.font = '12px "Zen Kaku Gothic New", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('データがまだありません', w/2, h/2);
+      return;
+    }
+
+    // determine max value
+    let maxVal = 0;
+    if(cfg.mode==='stackedBar'){
+      for(let i=0;i<n;i++){
+        let sum = 0;
+        cfg.series.forEach(s=>{ sum += (s.values[i]||0); });
+        if(sum>maxVal) maxVal = sum;
+      }
+    } else {
+      cfg.series.forEach(s=>{
+        s.values.forEach(v=>{ if(v!=null && v>maxVal) maxVal = v; });
+      });
+    }
+    maxVal = niceMax(maxVal || 1);
+
+    // gridlines + y labels
+    const gridSteps = 4;
+    ctx.strokeStyle = '#E4DBCB';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#6B6459';
+    ctx.font = '10px "Zen Kaku Gothic New", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for(let g=0; g<=gridSteps; g++){
+      const val = maxVal * g / gridSteps;
+      const y = padT + plotH - (plotH * g/gridSteps);
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(w-padR, y);
+      ctx.stroke();
+      let label = val >= 1000 ? Math.round(val/1000)+'k' : Math.round(val).toString();
+      ctx.fillText(label, padL-6, y);
+    }
+
+    // x labels
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const slot = plotW / n;
+    cfg.labels.forEach((lb,i)=>{
+      const x = padL + slot*i + slot/2;
+      // show fewer labels if too many
+      if(n<=8 || i%2===0 || i===n-1){
+        ctx.fillText(lb, x, h-padB+8);
+      }
+    });
+
+    function xFor(i){ return padL + slot*i + slot/2; }
+    function yFor(v){ return padT + plotH - (plotH * v/maxVal); }
+
+    if(cfg.mode==='stackedBar'){
+      const barW = Math.min(28, slot*0.5);
+      for(let i=0;i<n;i++){
+        let base = padT + plotH;
+        cfg.series.forEach(s=>{
+          const v = s.values[i]||0;
+          if(v<=0) return;
+          const barH = plotH * v/maxVal;
+          const x = xFor(i) - barW/2;
+          const y = base - barH;
+          ctx.fillStyle = s.color;
+          ctx.beginPath();
+          ctx.roundRect ? ctx.roundRect(x, y, barW, barH, [4,4,0,0]) : ctx.rect(x,y,barW,barH);
+          ctx.fill();
+          base = y;
+        });
+      }
+    } else {
+      cfg.series.forEach(s=>{
+        // area fill (only for single-series 'fill' charts)
+        if(cfg.fill && cfg.series.length===1){
+          ctx.beginPath();
+          let started = false;
+          let lastX = null;
+          s.values.forEach((v,i)=>{
+            if(v==null) return;
+            const x = xFor(i), y = yFor(v);
+            if(!started){ ctx.moveTo(x,y); started=true; } else { ctx.lineTo(x,y); }
+            lastX = x;
+          });
+          if(started){
+            ctx.lineTo(lastX, padT+plotH);
+            const firstIdx = s.values.findIndex(v=>v!=null);
+            ctx.lineTo(xFor(firstIdx), padT+plotH);
+            ctx.closePath();
+            ctx.fillStyle = s.color+'20';
+            ctx.fill();
+          }
+        }
+        // line
+        ctx.beginPath();
+        let started = false;
+        s.values.forEach((v,i)=>{
+          if(v==null){ started=false; return; }
+          const x = xFor(i), y = yFor(v);
+          if(!started){ ctx.moveTo(x,y); started=true; } else { ctx.lineTo(x,y); }
+        });
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+        // points
+        s.values.forEach((v,i)=>{
+          if(v==null) return;
+          const x = xFor(i), y = yFor(v);
+          ctx.beginPath();
+          ctx.arc(x,y,3,0,Math.PI*2);
+          ctx.fillStyle = s.color;
+          ctx.fill();
+          ctx.strokeStyle = '#FAF6EE';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        });
+      });
+    }
+  }
+
+  function renderChart(){ drawChart(); }
+  window.addEventListener('resize', ()=>{ if(document.getElementById('mainChart')) drawChart(); });
+
+  document.querySelectorAll('.chart-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.chart-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      activeChart = btn.dataset.chart;
+      renderChart();
+    });
+  });
+
+  // ---- toast ----
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+  }
+
+  // ---- save ----
+  function doSave(){
+    data[curKey] = collectForm();
+    saveData(data);
+    buildMonthOptions();
+    renderHistory();
+    renderCompare();
+    renderChart();
+    showToast('保存しました 🦊');
+  }
+  document.getElementById('saveBtn').addEventListener('click', doSave);
+
+  // ---- month nav ----
+  monthSelect.addEventListener('change', ()=>{
+    curKey = monthSelect.value;
+    fillForm(curKey);
+    renderCompare();
+  });
+  document.getElementById('prevMonth').addEventListener('click', ()=>{
+    const [y,m] = curKey.split('-').map(Number);
+    const d = new Date(y, m-2, 1);
+    curKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    buildMonthOptions();
+    fillForm(curKey);
+    renderCompare();
+  });
+  document.getElementById('nextMonth').addEventListener('click', ()=>{
+    const [y,m] = curKey.split('-').map(Number);
+    const d = new Date(y, m, 1);
+    curKey = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    buildMonthOptions();
+    fillForm(curKey);
+    renderCompare();
+  });
+
+  // ---- copy ----
+  const copyOverlay = document.getElementById('copyOverlay');
+  function buildCopyText(){
+    const rec = collectForm();
+    const total = (rec.shop||0)+(rec.base||0);
+    const prevKey = prevKeyOf(curKey);
+    const prev = prevKey ? data[prevKey] : null;
+    const prevTotal = prev ? (prev.shop||0)+(prev.base||0) : null;
+    const diffText = prevTotal!=null ? (total-prevTotal>=0?'+':'')+(total-prevTotal).toLocaleString()+'円' : '—';
+
+    return [
+      '🦊 grassin 月報｜'+monthLabel(curKey),
+      '─────────────',
+      '【売上】',
+      '店舗：'+fmtYen(rec.shop),
+      'BASE：'+fmtYen(rec.base),
+      '合計：'+fmtYen(total)+'（前月比 '+diffText+'）',
+      '',
+      '【販売実績】',
+      '本数：'+(rec.count ?? '—')+'本',
+      'BASE注文数：'+(rec.orders ?? '—')+'件',
+      '客単価：'+(rec.unit!=null ? '¥'+rec.unit.toLocaleString() : '—'),
+      '流入数：'+(rec.inflow ?? '—'),
+      'CVR：'+(rec.cvr!=null ? rec.cvr+'%' : '—'),
+      'リピート率：'+(rec.repeat!=null ? rec.repeat+'%' : '—'),
+      '',
+      '【Instagram】',
+      'フォロワー数：'+(rec.followers ?? '—'),
+      'リール：'+(rec.reel ?? '—')+'本／フィード：'+(rec.feed ?? '—')+'本／ストーリーズ：'+(rec.story ?? '—')+'本',
+      '',
+      '【広告分析】',
+      '広告費：'+(rec.adCost!=null ? '¥'+rec.adCost.toLocaleString() : '—'),
+      '閲覧：'+(rec.adViews ?? '—')+'回／リーチ：'+(rec.adReach ?? '—')+'回',
+      'フォロー：'+(rec.adFollow ?? '—')+'人'+(rec.adFollowCost!=null ? '（単価¥'+rec.adFollowCost+'）' : ''),
+      '保存：'+(rec.adSaves ?? '—')+'／プロフアクセス：'+(rec.adProfAccess ?? '—')+(rec.adAccessCost!=null ? '（単価¥'+rec.adAccessCost+'）' : ''),
+      'ROAS：'+(rec.adRoas!=null ? rec.adRoas+'%' : '—')+'／CPA：'+(rec.adCpa!=null ? '¥'+rec.adCpa : '—'),
+      '─────────────'
+    ].join('\n');
+  }
+  document.getElementById('copyBtn').addEventListener('click', ()=>{
+    doSave();
+    document.getElementById('copyPreview').textContent = buildCopyText();
+    copyOverlay.classList.add('show');
+  });
+  document.getElementById('closeCopy').addEventListener('click', ()=>copyOverlay.classList.remove('show'));
+  document.getElementById('doCopy').addEventListener('click', async ()=>{
+    const text = buildCopyText();
+    try{
+      await navigator.clipboard.writeText(text);
+      showToast('コピーしました 📋');
+    }catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('コピーしました 📋');
+    }
+    copyOverlay.classList.remove('show');
+  });
+
+  // ---- init ----
+  buildMonthOptions();
+  fillForm(curKey);
+  renderCompare();
+  renderHistory();
+  renderChart();
+})();
+</script>
+</body>
+</html>
